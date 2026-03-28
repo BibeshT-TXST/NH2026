@@ -6,9 +6,12 @@
  * No nav links. No account icon. Gallery-like soul.
  */
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Container } from '@mui/material';
 
 export default function HomePage() {
+  const navigate = useNavigate();
+
   return (
     <Box
       component="main"
@@ -66,12 +69,13 @@ export default function HomePage() {
           Lets Build Us
         </Typography>
 
-        {/* CTA — Velvet gradient */}
+        {/* CTA — Velvet gradient → navigates to /get-started */}
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Button
             variant="contained"
             color="primary"
             size="large"
+            onClick={() => navigate('/get-started')}
             sx={{
               px: { xs: 5, md: 6 },
               py: { xs: 1.8, md: 2.2 },
