@@ -7,7 +7,7 @@
  */
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { buildClassificationPrompt, COMPONENT_REGISTRY } from '../classificationPrompt.js';
+import { buildClassificationPrompt, COMPONENT_REGISTRY, LONGFORM_REGISTRY } from '../classificationPrompt.js';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -21,6 +21,7 @@ const model = genAI.getGenerativeModel({
 });
 
 const VALID_COMPONENTS = Object.keys(COMPONENT_REGISTRY);
+const VALID_LONGFORM = Object.keys(LONGFORM_REGISTRY);
 
 /**
  * POST /api/classify
@@ -63,7 +64,7 @@ export async function classifyReflection(req, res) {
       return res.status(502).json({ error: 'Gemini returned an unparseable response.', raw });
     }
 
-    const { component, confidence, reasoning, detectedTone } = parsed;
+    const { component, longformComponents, confidence, reasoning, detectedTone } = parsed;
 
     // Guard: ensure component is one of our known keys
     if (!VALID_COMPONENTS.includes(component)) {
@@ -72,11 +73,22 @@ export async function classifyReflection(req, res) {
       parsed.reasoning = `Defaulted — Gemini returned an unrecognized component name. Original: "${component}".`;
     }
 
-    console.log(`[Gemini] ✓ Classified as: ${parsed.component} (confidence: ${confidence}, tone: "${detectedTone}")`);
+    // Guard: ensure longformComponents are valid
+    let validLongform = [];
+    if (Array.isArray(longformComponents)) {
+      validLongform = longformComponents.filter(c => VALID_LONGFORM.includes(c));
+    }
+    if (validLongform.length < 2) {
+      console.warn(`[Gemini] Invalid or missing longformComponents returned: ${JSON.stringify(longformComponents)}. Defaulting.`);
+      validLongform = ["The Buddy Circle", "Morning Walk & Talk"];
+    }
+
+    console.log(`[Gemini] ✓ Classified as: ${parsed.component} and ${validLongform.join(', ')} (confidence: ${confidence}, tone: "${detectedTone}")`);
 
     // ── Return clean response ───────────────────────────────────────
     return res.status(200).json({
       component: parsed.component,
+      longformComponents: validLongform.slice(0, 2),
       confidence: parsed.confidence ?? null,
       reasoning: parsed.reasoning ?? null,
       detectedTone: parsed.detectedTone ?? null,

@@ -23,6 +23,32 @@ export const COMPONENT_REGISTRY = {
   },
 };
 
+export const LONGFORM_REGISTRY = {
+  "The Buddy Circle": {
+    name: "The Buddy Circle",
+    description: "A warm, no-pressure hangout for students who find it hard to make friends. Share stories, play games, and build genuine connections at your own pace."
+  },
+  "Study Together Club": {
+    name: "Study Together Club",
+    description: "Struggle with coursework? Join peers who get it. We pair you with patient study partners and break tough subjects into bite-sized pieces — no judgement."
+  },
+  "Safe Space Sessions": {
+    name: "Safe Space Sessions",
+    description: "Guided group sessions led by a trained counselor. Talk about loneliness, academic stress, or just listen. Everything shared here stays here."
+  },
+  "Quiet Coffee Corner": {
+    name: "Quiet Coffee Corner",
+    description: "Not everyone thrives in loud crowds. Enjoy a calm café atmosphere with lo-fi music, free coffee, and friendly faces who understand introversion."
+  },
+  "Mindful Focus Workshop": {
+    name: "Mindful Focus Workshop",
+    description: "Learn practical techniques for managing exam anxiety, improving concentration, and building a study routine that actually works for your brain."
+  },
+  "Morning Walk & Talk": {
+    name: "Morning Walk & Talk",
+    description: "Start your day with a gentle campus walk alongside others. Movement eases anxiety, and a little sunlight goes a long way for your mood."
+  }
+};
 /**
  * Builds the classification prompt sent to Gemini.
  * Returns strict JSON — no markdown, no prose.
@@ -32,12 +58,19 @@ export function buildClassificationPrompt(reflectionText) {
     .map(c => `- ${c.name}: ${c.description}`)
     .join('\n');
 
+  const longformDescriptions = Object.values(LONGFORM_REGISTRY)
+    .map(c => `- ${c.name}: ${c.description}`)
+    .join('\n');
+
   return `You are a compassionate clinical psychologist AI assistant embedded in a mental wellness app called "Lets Build Us".
 
-A user has just completed their daily reflection. Your task is to read their reflection text and classify which ONE therapeutic micro-intervention component is most appropriate to show them right now.
+A user has just completed their daily reflection. Your task is to read their reflection text and classify which therapeutic micro-intervention component (shortform) AND which two campus events (longform) are most appropriate to show them right now.
 
-## Available Components
+## Available Shortform Components
 ${componentDescriptions}
+
+## Available Longform Components (Events)
+${longformDescriptions}
 
 ## User's Reflection
 """
@@ -46,16 +79,18 @@ ${reflectionText}
 
 ## Instructions
 1. Analyze the emotional tone, language patterns, and psychological state expressed in the reflection.
-2. Choose EXACTLY ONE component from the list above that would be most beneficial for this user RIGHT NOW.
-3. Consider: acute vs. cognitive vs. grounding needs. Prioritize the user's most pressing state.
-4. If the reflection is generally positive/neutral with no clear distress, default to BoxBreathingCard as a positive reinforcement practice.
+2. Choose EXACTLY ONE shortform component from the list above that would be most beneficial for this user RIGHT NOW.
+3. Choose EXACTLY TWO longform components (events) from the list above that would best support the user.
+4. Consider: acute vs. cognitive vs. grounding needs. Prioritize the user's most pressing state.
+5. If the reflection is generally positive/neutral with no clear distress, default to BoxBreathingCard as a positive reinforcement practice, and pick two generally uplifting events.
 
 ## Response Format
 Respond with ONLY valid JSON. No markdown. No explanation outside the JSON. Exactly this structure:
 {
-  "component": "<ComponentName>",
+  "component": "<ShortformComponentName>",
+  "longformComponents": ["<EventName1>", "<EventName2>"],
   "confidence": <0.0 to 1.0>,
-  "reasoning": "<One sentence: why this component fits this user's state>",
+  "reasoning": "<One sentence: why these components fit this user's state>",
   "detectedTone": "<2-3 word emotional tone summary>"
 }`;
 }

@@ -14,6 +14,9 @@ import BoxBreathingCard from '../components/shortform/BoxBreathingCard';
 import CognitiveDefusionCard from '../components/shortform/CognitiveDefusionCard';
 import GroundingCarouselCard from '../components/shortform/GroundingCarouselCard';
 
+import EventCard from '../components/longform/EventCard';
+import { events } from '../components/longform/CampusEventsGrid';
+
 /* ── Design tokens ───────────────────────────────────────────────── */
 const green = '#00450d';
 const ink   = '#1a1c1c';
@@ -52,7 +55,12 @@ export default function DashboardPage() {
 
   const classification = location.state?.classification;
   const recommendedComponent = classification?.component;
+  const longformNames = classification?.longformComponents || [];
   const reasoning = classification?.reasoning;
+
+  const recommendedEvents = longformNames
+    .map(name => events.find(e => e.title === name))
+    .filter(Boolean);
 
   const todayStr = new Date().toLocaleDateString('en-US', {
     weekday: 'long', month: 'long', day: 'numeric',
@@ -313,10 +321,31 @@ export default function DashboardPage() {
             flexDirection: 'column',
             gap: '10px',
             minHeight: 0,
+            overflowY: 'auto'
           }}>
 
-            {/* Section placeholder cards */}
-            {SECTIONS.map((section, i) => (
+            {recommendedComponent && recommendedEvents.length > 0 ? (
+              <>
+                <Typography sx={{
+                  fontFamily: '"Inter", sans-serif',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  color: muted,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  px: 1,
+                  mt: 0.5,
+                  mb: 0.5,
+                }}>
+                  Suggested Activities
+                </Typography>
+                {recommendedEvents.map((event) => (
+                  <EventCard key={event.id} event={event} />
+                ))}
+              </>
+            ) : (
+              /* Section placeholder cards */
+              SECTIONS.map((section, i) => (
               <Box
                 key={section.label}
                 sx={{
@@ -383,7 +412,8 @@ export default function DashboardPage() {
                   </Typography>
                 </Box>
               </Box>
-            ))}
+            ))
+            )}
 
           </Box>
         </Box>
