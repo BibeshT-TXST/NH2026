@@ -6,9 +6,10 @@
  */
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Fade } from '@mui/material';
+import { Box, Typography, Fade, CircularProgress } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { classifyReflection } from '../services/classifyService.js';
 
 /* ── Design tokens ───────────────────────────────────────────────── */
 const green = '#00450d';
@@ -47,11 +48,13 @@ export default function ReflectionPage() {
   const navigate = useNavigate();
   const textRef = useRef(null);
 
-  const [text, setText] = useState('');
-  const [saved, setSaved] = useState(false);
-  const [pIdx, setPIdx] = useState(0);
-  const [fadePrp, setFadePrp] = useState(true);
-  const [mounted, setMounted] = useState(false);
+  const [text, setText]         = useState('');
+  const [saved, setSaved]       = useState(false);
+  const [loading, setLoading]   = useState(false);
+  const [apiError, setApiError] = useState('');
+  const [pIdx, setPIdx]         = useState(0);
+  const [fadePrp, setFadePrp]   = useState(true);
+  const [mounted, setMounted]   = useState(false);
   const [greeting, setGreeting] = useState(getGreeting());
 
   const maxWords = 70;
@@ -81,10 +84,20 @@ export default function ReflectionPage() {
     return () => clearInterval(id);
   }, []);
 
-  const handleSave = () => {
-    if (isEmpty) return;
-    setSaved(true);
-    setTimeout(() => navigate('/'), 1600);
+  const handleSave = async () => {
+    if (isEmpty || loading) return;
+    setLoading(true);
+    setApiError('');
+    try {
+      const result = await classifyReflection(text);
+      setSaved(true);
+      // Navigate to dashboard, passing the Gemini result in router state
+      setTimeout(() => navigate('/dashboard', { state: { classification: result } }), 600);
+    } catch (err) {
+      console.error('[classify] Error:', err);
+      setApiError('Could not connect to the backend. Is it running?');
+      setLoading(false);
+    }
   };
 
   return (
@@ -123,13 +136,19 @@ export default function ReflectionPage() {
           flexShrink: 0,
           px: '2px',
         }}>
-          <Typography sx={{
-            fontFamily: '"Manrope", sans-serif',
-            fontWeight: 800,
-            fontSize: '1.1rem',
-            color: green,
-            letterSpacing: '-0.02em',
-          }}>
+          <Typography
+            onClick={() => navigate('/dashboard')}
+            sx={{
+              fontFamily: '"Manrope", sans-serif',
+              fontWeight: 800,
+              fontSize: '1.1rem',
+              color: green,
+              letterSpacing: '-0.02em',
+              cursor: 'pointer',
+              transition: 'opacity 0.15s ease',
+              '&:hover': { opacity: 0.75 },
+            }}
+          >
             Lets Build Us
           </Typography>
           <Typography sx={{
@@ -289,7 +308,7 @@ export default function ReflectionPage() {
               <Box
                 component="button"
                 onClick={handleSave}
-                disabled={isEmpty || saved}
+                disabled={isEmpty || saved || loading}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -308,9 +327,9 @@ export default function ReflectionPage() {
                   fontSize: '0.9rem',
                   letterSpacing: '0.01em',
                   border: 'none',
-                  cursor: isEmpty ? 'not-allowed' : 'pointer',
+                  cursor: isEmpty || loading ? 'not-allowed' : 'pointer',
                   transition: 'all 0.2s ease',
-                  boxShadow: isEmpty || saved ? 'none' : '0 4px 18px rgba(0,69,13,0.28)',
+                  boxShadow: isEmpty || saved || loading ? 'none' : '0 4px 18px rgba(0,69,13,0.28)',
                   '&:hover:not(:disabled)': {
                     backgroundColor: '#005a10',
                     transform: 'translateY(-1px)',
@@ -319,9 +338,16 @@ export default function ReflectionPage() {
                   '&:active': { transform: 'scale(0.97)' },
                 }}
               >
-                {saved ? 'Lets build us' : 'Lets build us'}
+                {loading ? <CircularProgress size={20} color="inherit" /> : saved ? 'Lets build us' : 'Lets build us'}
               </Box>
             </Box>
+            {apiError && (
+              <Fade in>
+                <Typography sx={{ textAlign: 'right', mt: 1, color: '#ba1a1a', fontSize: '0.75rem', fontFamily: '"Inter", sans-serif', fontWeight: 500 }}>
+                  {apiError}
+                </Typography>
+              </Fade>
+            )}
           </Box>
 
           {/* ── RIGHT COLUMN ─────────────────────────────────────── */}
