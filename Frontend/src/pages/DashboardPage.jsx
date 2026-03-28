@@ -57,6 +57,7 @@ export default function DashboardPage() {
   const recommendedComponent = classification?.component;
   const longformNames = classification?.longformComponents || [];
   const reasoning = classification?.reasoning;
+  const messageToUser = classification?.messageToUser || reasoning;
 
   const recommendedEvents = longformNames
     .map(name => events.find(e => e.title === name))
@@ -304,7 +305,7 @@ export default function DashboardPage() {
                      </Typography>
                   </Box>
                   <Typography sx={{ fontFamily: '"Inter", sans-serif', fontSize: '0.85rem', color: muted, fontStyle: 'italic', lineHeight: 1.6 }}>
-                    "{reasoning}"
+                    "{messageToUser}"
                   </Typography>
                 </Box>
                 

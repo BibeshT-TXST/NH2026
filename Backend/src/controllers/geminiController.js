@@ -64,7 +64,7 @@ export async function classifyReflection(req, res) {
       return res.status(502).json({ error: 'Gemini returned an unparseable response.', raw });
     }
 
-    const { component, longformComponents, confidence, reasoning, detectedTone } = parsed;
+    const { component, longformComponents, confidence, reasoning, messageToUser, detectedTone } = parsed;
 
     // Guard: ensure component is one of our known keys
     if (!VALID_COMPONENTS.includes(component)) {
@@ -91,6 +91,7 @@ export async function classifyReflection(req, res) {
       longformComponents: validLongform.slice(0, 2),
       confidence: parsed.confidence ?? null,
       reasoning: parsed.reasoning ?? null,
+      messageToUser: parsed.messageToUser ?? "Here is a personalized recommendation based on your reflection.",
       detectedTone: parsed.detectedTone ?? null,
     });
 

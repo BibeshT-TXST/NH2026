@@ -90,7 +90,8 @@ Respond with ONLY valid JSON. No markdown. No explanation outside the JSON. Exac
   "component": "<ShortformComponentName>",
   "longformComponents": ["<EventName1>", "<EventName2>"],
   "confidence": <0.0 to 1.0>,
-  "reasoning": "<One sentence: why these components fit this user's state>",
+  "reasoning": "<One sentence: concise analytical reason for the backend logs>",
+  "messageToUser": "<A short, compassionate, first-person message directly addressed to the user explaining why these are recommended (e.g. 'It sounds like you're carrying a lot today, so I thought these might help.')>",
   "detectedTone": "<2-3 word emotional tone summary>"
 }`;
 }
