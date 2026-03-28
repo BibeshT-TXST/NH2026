@@ -75,6 +75,7 @@ export const cardStyles = {
     display: "flex",
     alignItems: "center",
     gap: "16px",
+    width: "100%",
     marginTop: "auto",
     paddingTop: "20px",
   },
@@ -104,6 +105,21 @@ export const cardStyles = {
 export default function EventCard({ event }) {
   const [hovered, setHovered] = useState(false);
 
+  const handleJoin = (e) => {
+    if (e) e.stopPropagation();
+    const confirmed = window.confirm(`Do you want to join "${event.title}"?`);
+    if (confirmed) {
+      window.alert(`You're in! See you at "${event.title}".`);
+    }
+  };
+
+  const handleCardClick = () => {
+    const confirmed = window.confirm(`Do you want to join "${event.title}"?`);
+    if (confirmed) {
+      window.alert(`You're in! See you at "${event.title}".`);
+    }
+  };
+
   return (
     <div
       style={{
@@ -114,6 +130,7 @@ export default function EventCard({ event }) {
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={handleCardClick}
     >
       {/* Top row: icon + badge */}
       <div
@@ -159,12 +176,22 @@ export default function EventCard({ event }) {
           </span>
           <span>{event.time}</span>
         </div>
-        <div style={cardStyles.metaRow}>
-          <span className="material-icons" style={cardStyles.metaIcon}>
-            location_on
-          </span>
-          <span>{event.location}</span>
-        </div>
+        <a
+          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+            event.location
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: "none", color: "inherit" }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div style={cardStyles.metaRow}>
+            <span className="material-icons" style={cardStyles.metaIcon}>
+              location_on
+            </span>
+            <span style={{ textDecoration: "underline" }}>{event.location}</span>
+          </div>
+        </a>
       </div>
 
       {/* Divider */}
@@ -172,18 +199,26 @@ export default function EventCard({ event }) {
 
       {/* Actions */}
       <div style={cardStyles.actions}>
-        <button
-          style={cardStyles.viewBtn}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor = "#2d5a2d")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor = "#1a3a1a")
-          }
+        <a
+          href={event.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: "none", display: "block", flex: 1 }}
+          onClick={(e) => e.stopPropagation()}
         >
-          View Details
-        </button>
-        <button style={cardStyles.joinBtn}>Join</button>
+          <button
+            style={{ ...cardStyles.viewBtn, width: "100%" }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#2d5a2d")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#1a3a1a")
+            }
+          >
+            View Details
+          </button>
+        </a>
+        <button style={{ ...cardStyles.joinBtn, width: "100%", flex: 1, textAlign: "center" }} onClick={handleJoin}>Join</button>
       </div>
     </div>
   );

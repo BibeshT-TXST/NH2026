@@ -8,10 +8,11 @@ export const events = [
     icon: "group",
     title: "The Buddy Circle",
     description:
-      "A warm, no-pressure hangout for students who find it hard to make friends. Share stories, play games, and build genuine connections at your own pace.",
+      "A warm, no-pressure hangout for students and young people who find it hard to make friends in the city. Share stories, play light games, and build genuine connections at your own pace.",
     day: "Every Thursday",
     time: "5:00 PM",
-    location: "Student Wellness Center, Room 204",
+    location: "CMC-Nepal, Thapathali, Kathmandu",
+    link: "https://cmcnepal.org.np/"
   },
   {
     id: 2,
@@ -19,10 +20,11 @@ export const events = [
     icon: "menu_book",
     title: "Study Together Club",
     description:
-      "Struggle with coursework? Join peers who get it. We pair you with patient study partners and break tough subjects into bite-sized pieces — no judgement.",
+      "Struggle with coursework or exam prep? Join peers who understand the pressure. We pair you with patient study partners and break tough subjects into manageable pieces — no judgement.",
     day: "Mon & Wed",
     time: "3:00 PM",
-    location: "Library Commons, 2nd Floor",
+    location: "Kathmandu University Library, Hattiban Campus",
+    link: "https://soed.ku.edu.np/scwc"
   },
   {
     id: 3,
@@ -30,10 +32,11 @@ export const events = [
     icon: "favorite_border",
     title: "Safe Space Sessions",
     description:
-      "Guided group sessions led by a trained counselor. Talk about loneliness, academic stress, or just listen. Everything shared here stays here.",
+      "Guided group sessions by trained counselors. Talk about loneliness, academic stress, or just listen. Everything shared here stays here.",
     day: "Every Friday",
     time: "4:30 PM",
-    location: "Counseling Wing, Building C",
+    location: "School Counseling and Wellbeing Support Centre, KU Hattiban Campus",
+    link: "https://soed.ku.edu.np/scwc"
   },
   {
     id: 4,
@@ -41,10 +44,11 @@ export const events = [
     icon: "coffee",
     title: "Quiet Coffee Corner",
     description:
-      "Not everyone thrives in loud crowds. Enjoy a calm café atmosphere with lo-fi music, free coffee, and friendly faces who understand introversion.",
+      "Not everyone thrives in loud crowds. Enjoy a calm café atmosphere with lo-fi music, affordable coffee, and friendly faces who understand introversion and city life. Regular informal meetups happen here.",
     day: "Every Saturday",
     time: "11:00 AM",
-    location: "Campus Café Lounge",
+    location: "Himalayan Java, Jhamsikhel, Lalitpur",
+    link: "https://himalayanjava.com/locations/jhamsikhel/"
   },
   {
     id: 5,
@@ -52,10 +56,11 @@ export const events = [
     icon: "psychology",
     title: "Mindful Focus Workshop",
     description:
-      "Learn practical techniques for managing exam anxiety, improving concentration, and building a study routine that actually works for your brain.",
+      "Learn practical techniques for managing exam anxiety, improving concentration, and building a study routine — with guided meditation and discussion groups at Kopan Monastery.",
     day: "Bi-weekly Tuesday",
     time: "2:00 PM",
-    location: "Mindfulness Lab, Wellness Block",
+    location: "Kopan Monastery, Boudhanath, Kathmandu",
+    link: "https://kopanmonastery.org/course-calendar/"
   },
   {
     id: 6,
@@ -63,10 +68,11 @@ export const events = [
     icon: "wb_sunny",
     title: "Morning Walk & Talk",
     description:
-      "Start your day with a gentle campus walk alongside others. Movement eases anxiety, and a little sunlight goes a long way for your mood.",
+      "Start your day with a gentle walk alongside others in the fresh Kathmandu air. Movement eases anxiety, and a little morning sunlight goes a long way for your mood. Open to all.",
     day: "Weekdays",
     time: "7:30 AM",
-    location: "Main Campus Gate",
+    location: "Garden of Dreams, Thamel, Kathmandu",
+    link: "https://ntb.gov.np/en/garden-of-dreams"
   },
 ];
 
