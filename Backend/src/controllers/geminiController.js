@@ -11,12 +11,11 @@ import { buildClassificationPrompt, COMPONENT_REGISTRY } from '../classification
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Use gemini-1.5-flash — fast, cheap, perfect for classification tasks
+// Use gemini-2.5-flash — fast, cheap, perfect for classification tasks
 const model = genAI.getGenerativeModel({
-  model: 'gemini-1.5-flash',
+  model: 'gemini-2.5-flash',
   generationConfig: {
     temperature: 0.3,       // Low temp = consistent, deterministic classification
-    maxOutputTokens: 256,   // We only need a small JSON blob back
     responseMimeType: 'application/json',
   },
 });
@@ -55,7 +54,10 @@ export async function classifyReflection(req, res) {
     // ── Parse and validate Gemini's JSON response ───────────────────
     let parsed;
     try {
-      parsed = JSON.parse(raw);
+      // Extract just the JSON object from the response string, ignoring any markdown or text
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error("No JSON object found in response");
+      parsed = JSON.parse(match[0]);
     } catch {
       console.error('[Gemini] Failed to parse response as JSON:', raw);
       return res.status(502).json({ error: 'Gemini returned an unparseable response.', raw });
@@ -76,7 +78,7 @@ export async function classifyReflection(req, res) {
     return res.status(200).json({
       component: parsed.component,
       confidence: parsed.confidence ?? null,
-      reasoning:  parsed.reasoning ?? null,
+      reasoning: parsed.reasoning ?? null,
       detectedTone: parsed.detectedTone ?? null,
     });
 
