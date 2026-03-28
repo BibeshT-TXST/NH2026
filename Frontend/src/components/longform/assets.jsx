@@ -7,10 +7,10 @@ const events = [
     icon: "group",
     title: "The Buddy Circle",
     description:
-      "A warm, no-pressure hangout for students who find it hard to make friends. Share stories, play games, and build genuine connections at your own pace.",
+      "A warm, no-pressure hangout for students and young people who find it hard to make friends in the city. Share stories, play light games, and build genuine connections at your own pace.",
     day: "Every Thursday",
     time: "5:00 PM",
-    location: "Student Wellness Center, Room 204",
+    location: "Student Wellness Center, Thapathali (or similar community space)",
   },
   {
     id: 2,
@@ -18,10 +18,10 @@ const events = [
     icon: "menu_book",
     title: "Study Together Club",
     description:
-      "Struggle with coursework? Join peers who get it. We pair you with patient study partners and break tough subjects into bite-sized pieces — no judgement.",
+      "Struggle with coursework or exam prep? Join peers who understand the pressure. We pair you with patient study partners and break tough subjects into manageable pieces — no judgement.",
     day: "Mon & Wed",
     time: "3:00 PM",
-    location: "Library Commons, 2nd Floor",
+    location: "Library Commons or University Study Hall, Kathmandu",
   },
   {
     id: 3,
@@ -29,10 +29,10 @@ const events = [
     icon: "favorite_border",
     title: "Safe Space Sessions",
     description:
-      "Guided group sessions led by a trained counselor. Talk about loneliness, academic stress, or just listen. Everything shared here stays here.",
+      "Guided group sessions led by trained counselors from Ankur Counseling Center or KU Wellbeing Support. Talk about loneliness, academic stress, or just listen. Everything shared here stays here.",
     day: "Every Friday",
     time: "4:30 PM",
-    location: "Counseling Wing, Building C",
+    location: "Counseling Wing, Kathmandu University or Ankur Center",
   },
   {
     id: 4,
@@ -40,10 +40,10 @@ const events = [
     icon: "coffee",
     title: "Quiet Coffee Corner",
     description:
-      "Not everyone thrives in loud crowds. Enjoy a calm café atmosphere with lo-fi music, free coffee, and friendly faces who understand introversion.",
+      "Not everyone thrives in loud crowds. Enjoy a calm café atmosphere with lo-fi music, free or affordable coffee, and friendly faces who understand introversion and city life.",
     day: "Every Saturday",
     time: "11:00 AM",
-    location: "Campus Café Lounge",
+    location: "Campus Café Lounge or Himalayan Java-style quiet spot, Thamel/Jhamsikhel",
   },
   {
     id: 5,
@@ -51,10 +51,10 @@ const events = [
     icon: "psychology",
     title: "Mindful Focus Workshop",
     description:
-      "Learn practical techniques for managing exam anxiety, improving concentration, and building a study routine that actually works for your brain.",
+      "Learn practical techniques for managing exam anxiety, improving concentration, and building a study routine that actually works for your brain — inspired by Kopan Monastery-style mindfulness sessions.",
     day: "Bi-weekly Tuesday",
     time: "2:00 PM",
-    location: "Mindfulness Lab, Wellness Block",
+    location: "Mindfulness Lab or Kopan Monastery / Community Wellness Space, Boudha",
   },
   {
     id: 6,
@@ -62,10 +62,10 @@ const events = [
     icon: "wb_sunny",
     title: "Morning Walk & Talk",
     description:
-      "Start your day with a gentle campus walk alongside others. Movement eases anxiety, and a little sunlight goes a long way for your mood.",
+      "Start your day with a gentle walk alongside others in the fresh Kathmandu air. Movement eases anxiety, and a little morning sunlight goes a long way for your mood.",
     day: "Weekdays",
     time: "7:30 AM",
-    location: "Main Campus Gate",
+    location: "Main Campus Gate or Garden of Dreams / Nearby Park, Kathmandu",
   },
 ];
 

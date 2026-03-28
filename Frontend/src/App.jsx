@@ -13,6 +13,7 @@ import HomePage from './pages/HomePage';
 import GetStartedPage from './pages/GetStartedPage';
 import AuthPage from './pages/AuthPage';
 import ReflectionPage from './pages/ReflectionPage';
+import assets from './components/longform/assets';
 
 // Routes where the TopBar + its padding offset should be hidden
 const NO_NAV_ROUTES = ['/reflect'];
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="/get-started" element={<GetStartedPage />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/reflect" element={<ReflectionPage />} />
+          <Route path="card" element={<assets />} />
         </Routes>
       </Box>
 
