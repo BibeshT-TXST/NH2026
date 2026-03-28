@@ -1,0 +1,64 @@
+/**
+ * Global Stylesheet — The Curated Canvas
+ *
+ * Minimal resets and atmospheric utilities.
+ * Heavy lifting is done by the MUI theme; this file provides
+ * the "paper texture" overlay and base-level resets.
+ */
+
+/* ── Reset ────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #ffffff;
+  color: #1a1c1c;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: #ffdfa0;
+  color: #1a1c1c;
+}
+
+/* ── Atmospheric paper texture overlay ────────────────────── */
+.paper-texture {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  filter: contrast(1.5);
+  mix-blend-mode: multiply;
+  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDxovH_5ceLykW0q577UTDZvNyVt-bVIaQ3wYTVWmsRF9Sq_n7pwi_NncFyXTDNkGusLYGOFy-IPMN-rhnSuogn4s7nGXlpd0uq3uuCu-M-gKKf0NhE3QnMjgnhTJbFPUZNxpwHY78rrK_9Uint0UR-iC3Tj0RK55qsOjbw6xsUM-yupw3xsYNFLkEY7_KUTFK59Hx8KMKJMmJYeA-niLJzblzEb_GXs8xYAhIZSZqpgnheqc2TpNZe6HGvqMOktvG64FPLAPwGMLU');
+  background-size: cover;
+  z-index: 9999;
+}
+
+/* ── Ambient glow blobs ───────────────────────────────────── */
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(100px);
+}
+
+/* ── Utility: hide scrollbar ──────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
