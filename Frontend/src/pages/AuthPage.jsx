@@ -7,7 +7,7 @@
  * No nav clutter. Only the "Lets Build Us" wordmark in the TopBar.
  */
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -25,13 +25,38 @@ const identityOptions = ['Student', 'Professional', 'Its just me'];
 
 export default function AuthPage() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const initialMode = searchParams.get('mode') === 'login' ? 'login' : 'signup';
 
   const [mode, setMode] = useState(initialMode);
   const [identity, setIdentity] = useState('Student');
   const [showPassword, setShowPassword] = useState(false);
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const isLogin = mode === 'login';
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setErrorMsg('');
+
+    if (isLogin) {
+      if (email === 'test@gmail.com' && password === '123456') {
+        navigate('/reflect');
+      } else {
+        setErrorMsg('Invalid email or password. Try test@gmail.com / 123456.');
+      }
+    } else {
+      // Demo signup: just proceed
+      if (!email || !password) {
+        setErrorMsg('Please fill out all fields.');
+        return;
+      }
+      navigate('/reflect');
+    }
+  };
 
   return (
     <Box
@@ -229,8 +254,24 @@ export default function AuthPage() {
               </Typography>
             </Box>
 
-            <Box component="form" onSubmit={(e) => e.preventDefault()}>
+            <Box component="form" onSubmit={handleSubmit}>
               <Stack spacing={4}>
+                {errorMsg && (
+                  <Box
+                    sx={{
+                      backgroundColor: 'rgba(186, 26, 26, 0.1)',
+                      color: '#ba1a1a',
+                      px: 3,
+                      py: 2,
+                      borderRadius: '8px',
+                      fontFamily: '"Inter", sans-serif',
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {errorMsg}
+                  </Box>
+                )}
                 {/* ── Identity chips (sign-up only) ──────────── */}
                 {!isLogin && (
                   <Box>
@@ -297,6 +338,8 @@ export default function AuthPage() {
                     id="auth-email"
                     type="email"
                     placeholder="name@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     sx={{
                       width: '100%',
                       height: 56,
@@ -364,6 +407,8 @@ export default function AuthPage() {
                       id="auth-password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       sx={{
                         width: '100%',
                         height: 56,
