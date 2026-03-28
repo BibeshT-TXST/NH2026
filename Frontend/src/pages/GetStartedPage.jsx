@@ -6,6 +6,7 @@
  * No nav links. No account icon. No bottom nav.
  */
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Container, Stack } from '@mui/material';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
@@ -51,6 +52,12 @@ const moods = [
 ];
 
 export default function GetStartedPage() {
+  const navigate = useNavigate();
+
+  const handleMoodSelect = (moodLabel) => {
+    navigate(`/auth?mode=signup&mood=${encodeURIComponent(moodLabel)}`);
+  };
+
   return (
     <Box
       component="main"
@@ -178,7 +185,7 @@ export default function GetStartedPage() {
             <Box
               key={mood.label}
               component="button"
-              onClick={() => {}}
+              onClick={() => handleMoodSelect(mood.label)}
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
