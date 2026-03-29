@@ -1,13 +1,16 @@
 /**
- * HomePage — The Curated Canvas landing
+ * HomePage.jsx — Immersive Landing Experience
  *
- * Full-viewport hero section with editorial typography,
- * atmospheric glow blobs, and a gradient CTA.
- * No nav links. No account icon. Gallery-like soul.
+ * This is the primary entry point for the user journey.
+ * It features high-impact editorial typography, dynamic atmospheric 
+ * glow effects, and a clear call-to-action to begin the flow.
  */
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Container } from '@mui/material';
+
+// ── Root Component ──────────────────────────────────────────────────────────
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -24,10 +27,11 @@ export default function HomePage() {
         backgroundColor: 'transparent',
         position: 'relative',
         px: 3,
-        py: 8, // added padding for scrolling
+        py: 8,
       }}
     >
-      {/* ── Atmospheric glow blobs ─────────────────────────── */}
+      {/* ── Visual Backdrop: Atmospheric Glow Blobs ──────────────── */}
+      
       <Box
         className="glow-blob"
         sx={{
@@ -39,6 +43,7 @@ export default function HomePage() {
           opacity: 0.05,
         }}
       />
+      
       <Box
         className="glow-blob"
         sx={{
@@ -51,7 +56,8 @@ export default function HomePage() {
         }}
       />
 
-      {/* ── Hero content ───────────────────────────────────── */}
+      {/* ── Main Hero Content ────────────────────────────────────── */}
+      
       <Container
         maxWidth="md"
         sx={{
@@ -60,7 +66,7 @@ export default function HomePage() {
           textAlign: 'center',
         }}
       >
-        {/* H1 — Editorial anchor with generous breathing room */}
+        {/* Brand Headline: Editorial Typography */}
         <Typography
           variant="h1"
           sx={{
@@ -76,9 +82,7 @@ export default function HomePage() {
           Lets Build Us
         </Typography>
 
-
-
-        {/* CTA — Velvet gradient → navigates to /get-started */}
+        {/* Primary CTA: Mood Entry Point */}
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Button
             variant="contained"
@@ -108,6 +112,6 @@ export default function HomePage() {
         </Box>
       </Container>
     </Box>
-
   );
 }
+

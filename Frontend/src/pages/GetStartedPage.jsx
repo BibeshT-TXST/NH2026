@@ -1,40 +1,44 @@
 /**
- * GetStartedPage — "How are we feeling today?"
+ * GetStartedPage.jsx — Mood Discovery
  *
- * Mood check-in page. Three gold mood buttons with filled sentiment icons.
- * Strictly follows the provided static HTML design.
- * No nav links. No account icon. No bottom nav.
+ * The central mood-selection experience of "Lets Build Us."
+ * Features high-impact interactive mood cards that set the global 
+ * atmospheric tone (video, audio, colors) for the rest of the application.
  */
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Container, Stack } from '@mui/material';
+
+// Icons
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
+
+// Context
 import { useBackground } from '../context/BackgroundContext';
 
+// ── Configuration: Mood Taxonomy ───────────────────────────────────────────
 
-/* ── Mood options — each with its own emotional color ─────── */
-/*
- * Great  → vibrant green  (energetic, thriving)
- * Good   → warm amber     (steady, warm)
- * Ok     → soft lavender  (calm, neutral, reflective)
+/**
+ * Mood configuration defines the visual and emotional aesthetics 
+ * for the interactive selection cards.
  */
 const moods = [
   {
     icon: <SentimentVerySatisfiedIcon sx={{ fontSize: 40 }} />,
     label: 'Its going great',
-    bg: '#a8e6a1',   // soft mint-green
-    bgHover: '#8cd684',   // slightly deeper on hover
-    textColor: '#1b5e20',   // dark forest green text
-    iconColor: '#2e7d32',   // rich green icon
+    bg: '#a8e6a1',   
+    bgHover: '#8cd684',   
+    textColor: '#1b5e20',   
+    iconColor: '#2e7d32',   
     glowShadow: '0 20px 50px rgba(46, 125, 50, 0.18)',
     borderHover: '#c8f7c5',
   },
   {
     icon: <SentimentSatisfiedIcon sx={{ fontSize: 40 }} />,
     label: 'Its Going good',
-    bg: '#fec330',   // warm gold (original)
+    bg: '#fec330',   
     bgHover: '#f5b800',
     textColor: '#6f5100',
     iconColor: '#8d6e00',
@@ -44,30 +48,37 @@ const moods = [
   {
     icon: <SentimentNeutralIcon sx={{ fontSize: 40 }} />,
     label: 'Its going ok',
-    bg: '#d4c8f5',   // soft lavender
+    bg: '#d4c8f5',   
     bgHover: '#c4b5ed',
-    textColor: '#3a2d6b',   // deep plum text
-    iconColor: '#5c49a3',   // muted violet icon
+    textColor: '#3a2d6b',   
+    iconColor: '#5c49a3',   
     glowShadow: '0 20px 50px rgba(92, 73, 163, 0.15)',
     borderHover: '#e4dcfa',
   },
 ];
 
+// ── Root Component ──────────────────────────────────────────────────────────
+
 export default function GetStartedPage() {
   const navigate = useNavigate();
   const { setMood } = useBackground();
 
+  /**
+   * handleMoodSelect
+   * Maps the human-readable label to the internal mood state.
+   *
+   * @param {string} moodLabel - The label from the selected mood card.
+   */
   const handleMoodSelect = (moodLabel) => {
     const moodMapping = {
       'Its going great': 'Great',
       'Its Going good': 'Good',
       'Its going ok': 'Ok'
     };
+    
     setMood(moodMapping[moodLabel] || 'Good');
     navigate('/reflect');
   };
-
-
 
   return (
     <Box
@@ -85,7 +96,8 @@ export default function GetStartedPage() {
         pb: '100px',
       }}
     >
-      {/* ── Centered radial glow (behind content) ──────────── */}
+      {/* ── Visual Backdrop: Radial Atmosphere ──────────────────── */}
+      
       <Box
         sx={{
           position: 'fixed',
@@ -111,7 +123,8 @@ export default function GetStartedPage() {
         />
       </Box>
 
-      {/* ── Content ────────────────────────────────────────── */}
+      {/* ── Main Layout Area ────────────────────────────────────── */}
+      
       <Container
         maxWidth="lg"
         sx={{
@@ -120,7 +133,7 @@ export default function GetStartedPage() {
           textAlign: 'center',
         }}
       >
-        {/* Hero Statement */}
+        {/* Hero Section */}
         <Box sx={{ mb: { xs: 8, md: 10 } }}>
           <Typography
             variant="h1"
@@ -150,13 +163,12 @@ export default function GetStartedPage() {
               lineHeight: 1.6,
             }}
           >
-            A moment of reflection to anchor your journey. Choose the state that resonates most with your present self.
+            A moment of reflection to anchor your journey. Choose the state that 
+            resonates most with your present self.
           </Typography>
-
-
         </Box>
 
-        {/* Mood Buttons — each with its own emotional color */}
+        {/* Dynamic Mood Selection Grid */}
         <Stack
           direction={{ xs: 'column', md: 'row' }}
           spacing={4}
@@ -202,6 +214,7 @@ export default function GetStartedPage() {
               <Box sx={{ mb: 2.5, color: mood.iconColor, transform: 'scale(1.2)' }}>
                 {mood.icon}
               </Box>
+              
               <Typography
                 sx={{
                   fontFamily: '"Manrope", sans-serif',
@@ -218,6 +231,6 @@ export default function GetStartedPage() {
         </Stack>
       </Container>
     </Box>
-
   );
 }
+

@@ -1,45 +1,35 @@
 /**
- * ReflectionPage — Daily Practice · No-scroll Bento Layout
+ * ReflectionPage.jsx — Daily Practice & Emotional Processing
  *
- * Fits entirely within 100vh. No scrolling. No mood picker.
- * Each component is a bento card tile in a CSS grid.
+ * An immersive, no-scroll Bento-style layout designed for focused 
+ * expressive writing. Uses a CSS grid to present therapeutic prompts, 
+ * a dynamic writing canvas, and grounding research notes.
  */
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Fade, CircularProgress } from '@mui/material';
+
+// Icons
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+
+// Context & Services
 import { useBackground } from '../context/BackgroundContext';
 import { classifyReflection } from '../services/classifyService.js';
 
 
-/* ── Design tokens ───────────────────────────────────────────────── */
-// Colors now primarily driven by CSS variables in index.css
-const green = 'var(--accent)';
-const greenMid = 'var(--accent)';
-const ink = 'var(--text-primary)';
-const muted = 'var(--text-secondary)';
-const surface = 'rgba(255, 255, 255, 0.1)';
-const white = 'var(--card-surface)';
 
+// ── Design Tokens ──────────────────────────────────────────────────────────
 
-/* ── Rotating micro-prompts ──────────────────────────────────────── */
-const PROMPTS = [
-  'What is one thing that made you pause today?',
-  'Describe the moment you felt most like yourself.',
-  'What are you holding onto that you\'re ready to let go of?',
-  'What surprised you about today?',
-  'What do you wish you\'d said or done differently?',
-];
+const white  = 'var(--card-surface)';
+const ink    = 'var(--text-primary)';
+const muted  = 'var(--text-secondary)';
+const accent = 'var(--accent)';
 
-function getGreeting() {
-  const h = new Date().getHours();
-  if (h < 12) return 'Good morning';
-  if (h < 17) return 'Good afternoon';
-  return 'Good evening';
-}
-
-/* ── Shared bento card style ─────────────────────────────────────── */
+/**
+ * Shared Bento Card Base Style
+ */
 const card = (extra = {}) => ({
   backgroundColor: white,
   borderRadius: '14px',
@@ -48,19 +38,50 @@ const card = (extra = {}) => ({
   ...extra,
 });
 
+// ── Configuration: Therapeutic Prompts ────────────────────────────────────
+
+/**
+ * A rotating set of micro-prompts designed to stimulate 
+ * self-awareness and emotional labeling.
+ */
+const PROMPTS = [
+  'What is one thing that made you pause today?',
+  'Describe the moment you felt most like yourself.',
+  'What are you holding onto that you\'re ready to let go of?',
+  'What surprised you about today?',
+  'What do you wish you\'d said or done differently?',
+];
+
+/**
+ * Determines the time-appropriate greeting for the header.
+ */
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
+
+// ── Root Component ──────────────────────────────────────────────────────────
+
 export default function ReflectionPage() {
   const navigate = useNavigate();
-  const textRef = useRef(null);
+  const textRef  = useRef(null);
 
-  const [text, setText] = useState('');
-  const [saved, setSaved] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // States
+  const [text, setText]         = useState('');
+  const [saved, setSaved]       = useState(false);
+  const [loading, setLoading]   = useState(false);
   const [apiError, setApiError] = useState('');
-  const [pIdx, setPIdx] = useState(0);
-  const [fadePrp, setFadePrp] = useState(true);
-  const [mounted, setMounted] = useState(false);
+  const [pIdx, setPIdx]         = useState(0);
+  const [fadePrp, setFadePrp]   = useState(true);
+  const [mounted, setMounted]   = useState(false);
   const [greeting, setGreeting] = useState(getGreeting());
+
+  // Context
   const { mood } = useBackground();
+
 
 
   const maxWords = 70;
@@ -72,39 +93,69 @@ export default function ReflectionPage() {
     weekday: 'long', month: 'long', day: 'numeric',
   });
 
-  /* Entry fade */
-  useEffect(() => { setTimeout(() => setMounted(true), 60); }, []);
+  // ── Lifecycle & Effects ──────────────────────────────────────────────────
 
-  /* Keep greeting in sync with real clock — update every minute */
+  /**
+   * Entry animation trigger
+   */
+  useEffect(() => { 
+    const timer = setTimeout(() => setMounted(true), 60); 
+    return () => clearTimeout(timer);
+  }, []);
+
+  /**
+   * Clock synchronization for the greeting text.
+   */
   useEffect(() => {
     const id = setInterval(() => setGreeting(getGreeting()), 60_000);
     return () => clearInterval(id);
   }, []);
 
-  /* Rotate prompts every 6s */
+  /**
+   * Automatic micro-prompt rotation (with cross-fade).
+   */
   useEffect(() => {
     const id = setInterval(() => {
       setFadePrp(false);
-      setTimeout(() => { setPIdx(i => (i + 1) % PROMPTS.length); setFadePrp(true); }, 380);
+      setTimeout(() => { 
+        setPIdx(i => (i + 1) % PROMPTS.length); 
+        setFadePrp(true); 
+      }, 380);
     }, 6000);
     return () => clearInterval(id);
   }, []);
 
+  // ── Handlers ──────────────────────────────────────────────────────────────
+
+  /**
+   * handleSave
+   * Submits the reflection text for AI classification and 
+   * transitions to the dashboard.
+   */
   const handleSave = async () => {
     if (isEmpty || loading) return;
+    
     setLoading(true);
     setApiError('');
+    
     try {
       const result = await classifyReflection(text);
       setSaved(true);
+      
       // Navigate to dashboard, passing the Gemini result in router state
-      setTimeout(() => navigate('/dashboard', { state: { classification: result } }), 600);
+      setTimeout(() => {
+        navigate('/dashboard', { state: { classification: result } });
+      }, 600);
+      
     } catch (err) {
       console.error('[classify] Error:', err);
-      setApiError('Could not connect to the backend. Is it running?');
+      setApiError('Unable to analyze reflection. Please check your connection.');
       setLoading(false);
     }
   };
+
+
+  // ── Internal Layout: BENTO GRID ─────────────────────────────────────────
 
   return (
     <Box
@@ -115,7 +166,7 @@ export default function ReflectionPage() {
         flexDirection: 'column',
         backgroundColor: 'transparent',
         px: { xs: 2, md: '3vw' },
-        pt: '100px', // More space for TopBar
+        pt: '100px',
         pb: '5vh',
         opacity: mounted ? 1 : 0,
         transform: mounted ? 'translateY(0)' : 'translateY(8px)',
@@ -123,8 +174,6 @@ export default function ReflectionPage() {
         boxSizing: 'border-box',
       }}
     >
-
-      {/* ── Max-width wrapper ──────────────────────────────────────── */}
       <Box sx={{
         maxWidth: 1200,
         width: '100%',
@@ -135,7 +184,8 @@ export default function ReflectionPage() {
         gap: '1.2vh',
       }}>
 
-        {/* ── Top bar ───────────────────────────────────────────────── */}
+        {/* ── SECTION: Header & Date ────────────────────────────────── */}
+        
         <Box sx={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -159,7 +209,6 @@ export default function ReflectionPage() {
             Lets Build Us
           </Typography>
 
-
           <Typography sx={{
             fontFamily: '"Inter", sans-serif',
             fontSize: '0.85rem',
@@ -170,22 +219,17 @@ export default function ReflectionPage() {
           }}>
             {todayStr}
           </Typography>
-
-
         </Box>
 
-        {/* ══════════════════════════════════════════════════════════
-            BENTO GRID — fills remaining vertical space
-            Left: 1fr   Right: 260px fixed
-        ══════════════════════════════════════════════════════════ */}
+        {/* ── SECTION: Bento Core Grid ──────────────────────────────── */}
+        
         <Box sx={{
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', md: '1fr 300px' },
           gap: '20px',
         }}>
 
-
-          {/* ── LEFT COLUMN ─────────────────────────────────────── */}
+          {/* 🔗 LEFT COLUMN: Writing & Focus Area */}
           <Box sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -193,15 +237,15 @@ export default function ReflectionPage() {
             minHeight: 0,
           }}>
 
-            {/* CARD 1 — Header ─────────────────────────────────── */}
+            {/* CARD: Welcome & Adaptive Question */}
             <Box sx={{ ...card({ p: '32px 40px', flexShrink: 0, backdropFilter: 'blur(10px)' }) }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                <AutoAwesomeIcon sx={{ fontSize: 16, color: 'var(--accent)', opacity: 0.9 }} />
+                <AutoAwesomeIcon sx={{ fontSize: 16, color: accent, opacity: 0.9 }} />
                 <Typography sx={{
                   fontFamily: '"Manrope", sans-serif',
                   fontWeight: 850,
                   fontSize: '0.85rem',
-                  color: 'var(--accent)',
+                  color: accent,
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
                 }}>
@@ -209,14 +253,13 @@ export default function ReflectionPage() {
                 </Typography>
               </Box>
 
-
               <Typography sx={{
                 fontFamily: '"Manrope", sans-serif',
                 fontWeight: 850,
                 fontSize: { xs: '1.75rem', md: '2.5rem' },
                 lineHeight: 1.1,
                 letterSpacing: '-0.025em',
-                color: 'var(--text-primary)',
+                color: ink,
               }}>
                 {greeting}. {
                   mood === 'Great' ? "Fantastic. What's adding to your light today?" :
@@ -224,13 +267,9 @@ export default function ReflectionPage() {
                   "Stillness. Share whatever is surfacing for you."
                 }
               </Typography>
-
-
-
             </Box>
 
-
-            {/* CARD 2 — Writing canvas ─────────────────────────── */}
+            {/* CARD: Writing Canvas */}
             <Box sx={{
               ...card({
                 p: '40px',
@@ -240,26 +279,20 @@ export default function ReflectionPage() {
                 backdropFilter: 'blur(10px)',
               }),
             }}>
-              {/* Rotating micro-prompt */}
-              <Box sx={{
-                mb: 2.5,
-                opacity: fadePrp ? 1 : 0,
-                transition: 'opacity 0.38s ease',
-              }}>
+              {/* Active Prompt Container */}
+              <Box sx={{ mb: 2.5, opacity: fadePrp ? 1 : 0, transition: 'opacity 0.38s ease' }}>
                 <Typography sx={{
                   fontFamily: '"Inter", sans-serif',
                   fontWeight: 800,
                   fontSize: '1.1rem',
-                  color: 'var(--text-secondary)',
+                  color: muted,
                   fontStyle: 'italic',
                 }}>
                   {PROMPTS[pIdx]}
                 </Typography>
-
-
               </Box>
 
-              {/* Textarea — grows to fill card */}
+              {/* Reflection Input Field */}
               <Box
                 ref={textRef}
                 component="textarea"
@@ -277,23 +310,22 @@ export default function ReflectionPage() {
                   fontSize: '1.15rem',
                   fontWeight: 500,
                   lineHeight: 1.8,
-                  color: 'var(--text-primary)',
+                  color: ink,
                   resize: 'none',
                   outline: 'none',
                   minHeight: 300,
                   transition: 'all 0.3s ease',
                   '&:focus': {
                     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    borderColor: 'var(--accent)',
+                    borderColor: accent,
                   },
-                  '&::placeholder': { color: 'var(--text-secondary)', opacity: 0.5 },
+                  '&::placeholder': { color: muted, opacity: 0.5 },
                   display: 'block',
                   boxSizing: 'border-box',
                 }}
               />
 
-
-              {/* Word count + over-limit */}
+              {/* Status Row: Word Count & Limits */}
               <Box sx={{
                 flexShrink: 0,
                 mt: 1,
@@ -318,17 +350,15 @@ export default function ReflectionPage() {
                   fontFamily: '"Inter", sans-serif',
                   fontSize: '0.85rem',
                   fontWeight: 800,
-                  color: 'var(--text-secondary)',
+                  color: muted,
                   transition: 'color 0.2s ease',
                 }}>
                   {wordCount} / {maxWords} words
                 </Typography>
-
-
               </Box>
             </Box>
 
-            {/* Save Reflection — plain button, no card wrapper */}
+            {/* Submission Area */}
             <Box sx={{ flexShrink: 0, display: 'flex', justifyContent: 'flex-end' }}>
               <Box
                 component="button"
@@ -338,11 +368,7 @@ export default function ReflectionPage() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 2,
-                  backgroundColor: saved
-                    ? 'var(--accent)'
-                    : isEmpty
-                      ? 'rgba(0,0,0,0.1)'
-                      : 'var(--accent)',
+                  backgroundColor: saved ? accent : (isEmpty ? 'rgba(0,0,0,0.1)' : accent),
                   color: white,
                   px: '40px',
                   py: '18px',
@@ -352,9 +378,9 @@ export default function ReflectionPage() {
                   fontSize: '1.1rem',
                   letterSpacing: '0.01em',
                   border: 'none',
-                  cursor: isEmpty || loading ? 'not-allowed' : 'pointer',
+                  cursor: (isEmpty || loading) ? 'not-allowed' : 'pointer',
                   transition: 'all 0.3s ease',
-                  boxShadow: isEmpty || saved || loading ? 'none' : '0 10px 30px rgba(0,0,0,0.15)',
+                  boxShadow: (isEmpty || saved || loading) ? 'none' : '0 10px 30px rgba(0,0,0,0.15)',
                   '&:hover:not(:disabled)': {
                     filter: 'brightness(1.1)',
                     transform: 'translateY(-2px)',
@@ -365,18 +391,26 @@ export default function ReflectionPage() {
               >
                 {loading ? <CircularProgress size={20} color="inherit" /> : 'Lets build us'}
               </Box>
-
             </Box>
+
+            {/* Error Message Dispatch */}
             {apiError && (
               <Fade in>
-                <Typography sx={{ textAlign: 'right', mt: 1, color: '#ba1a1a', fontSize: '0.75rem', fontFamily: '"Inter", sans-serif', fontWeight: 500 }}>
+                <Typography sx={{ 
+                  textAlign: 'right', 
+                  mt: 1, 
+                  color: '#ba1a1a', 
+                  fontSize: '0.75rem', 
+                  fontFamily: '"Inter", sans-serif', 
+                  fontWeight: 500 
+                }}>
                   {apiError}
                 </Typography>
               </Fade>
             )}
           </Box>
 
-          {/* ── RIGHT COLUMN ─────────────────────────────────────── */}
+          {/* 🔗 RIGHT COLUMN: Context & Resources */}
           <Box sx={{
             display: { xs: 'none', md: 'flex' },
             flexDirection: 'column',
@@ -384,33 +418,31 @@ export default function ReflectionPage() {
             minHeight: 0,
           }}>
 
-            {/* CARD 4 — Why we reflect ────────────────────────── */}
+            {/* CARD: The Core Why */}
             <Box sx={{ ...card({ p: '20px 18px', flexShrink: 0 }) }}>
               <Typography sx={{
                 fontFamily: '"Manrope", sans-serif',
                 fontWeight: 850,
                 fontSize: '0.85rem',
-                color: 'var(--text-primary)',
+                color: ink,
                 mb: 1.25,
               }}>
                 Why we reflect
               </Typography>
-
 
               <Typography sx={{
                 fontFamily: '"Inter", sans-serif',
                 fontSize: '0.85rem',
                 fontWeight: 800,
                 lineHeight: 1.68,
-                color: 'var(--text-secondary)',
+                color: muted,
               }}>
-                Expressive writing for just a few minutes activates emotional processing, lowers cortisol, and builds self-awareness over time. The 70-word limit is intentional, constraints sharpen clarity.
+                Expressive writing activates emotional processing and builds self-awareness. 
+                The 70-word limit is intentional — constraints sharpen clarity.
               </Typography>
-
-
             </Box>
 
-            {/* CARD 5 — Research quote ────────────────────────── */}
+            {/* CARD: Academic Evidence */}
             <Box sx={{
               ...card({ p: '18px 18px', flexShrink: 0 }),
               borderLeft: `3px solid rgba(0,69,13,0.18)`,
@@ -422,35 +454,35 @@ export default function ReflectionPage() {
                 fontWeight: 850,
                 textTransform: 'uppercase',
                 letterSpacing: '0.1em',
-                color: 'var(--text-primary)',
+                color: ink,
                 mb: 1.25,
               }}>
                 Research Note
               </Typography>
+              
               <Typography sx={{
                 fontFamily: '"Inter", sans-serif',
                 fontSize: '0.85rem',
                 fontWeight: 800,
                 lineHeight: 1.65,
-                color: 'var(--text-secondary)',
+                color: muted,
                 fontStyle: 'italic',
                 mb: 1.25,
               }}>
                 "Naming an emotion reduces activation in the amygdala, creating distance between feeling and reaction."
               </Typography>
+              
               <Typography sx={{
                 fontFamily: '"Inter", sans-serif',
                 fontSize: '0.75rem',
                 fontWeight: 800,
-                color: 'var(--text-secondary)',
+                color: muted,
               }}>
-                — Lieberman et al., 2007 · UCLA
+                — Lieberman et al.
               </Typography>
-
-
             </Box>
 
-            {/* CARD 6 — Editorial image (fills remaining space) ── */}
+            {/* CARD: Visual Atmosphere (Bento Fill) */}
             <Box sx={{
               ...card({ position: 'relative' }),
               flex: 1,
@@ -459,7 +491,7 @@ export default function ReflectionPage() {
               <Box
                 component="img"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcTXvY480fm1Tk6JOi6Rujzq0NMRbpWCllBrgq-uHAKsuCoBlzw9TXULW8NJ8IaCRN6QGjael5oSK4uBqrN3F9GHsCHZe6De88aodVNfU-mh-8AKLErhgkR4zN_tYmFIQ0qwSoKuj3AGDLm2AXeklQDRalsM11_c_jRPNr--HOtZ3aFh7KGoSHKjNpQuncj75TDmC4eOdFPyKW-IrWhUFvL5NtFpYDwL28SKcNtYTuMtHRfF7HXXkD8uqDCE-ouvPjF0ovVY1DJMU"
-                alt="Minimalist journaling desk"
+                alt="Minimalist stillness"
                 sx={{
                   width: '100%',
                   height: '100%',
@@ -483,16 +515,14 @@ export default function ReflectionPage() {
                 fontFamily: '"Inter", sans-serif',
                 fontSize: '0.75rem',
                 fontWeight: 800,
-                color: 'var(--text-secondary)',
+                color: muted,
                 fontStyle: 'italic',
-
               }}>
                 Make space for stillness.
               </Typography>
-
             </Box>
 
-            {/* CARD 7 — Privacy note ──────────────────────────── */}
+            {/* CARD: Operational Metadata (Privacy) */}
             <Box sx={{
               ...card({
                 p: '11px 16px',
@@ -507,13 +537,11 @@ export default function ReflectionPage() {
                 fontFamily: '"Inter", sans-serif',
                 fontSize: '0.8rem',
                 fontWeight: 800,
-                color: 'var(--text-secondary)',
+                color: muted,
                 lineHeight: 1.45,
-
               }}>
-                This reflection is private. Only you can see it.
+                This reflection is local and private.
               </Typography>
-
             </Box>
           </Box>
 
@@ -522,3 +550,4 @@ export default function ReflectionPage() {
     </Box>
   );
 }
+
