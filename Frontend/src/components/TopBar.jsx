@@ -1,12 +1,16 @@
 /**
- * TopBar — Glassmorphism AppBar
+ * TopBar.jsx — Global Navigation Interface
  *
- * Floating navigation with backdrop-blur.
- * Only shows the brand wordmark — no nav links, no account icon
- * (per spec: "remove those headers and the account icon").
+ * A minimalist, transparent header that provides brand identity 
+ * across the application. Designed to be unobtrusive, it uses 
+ * subtle typography and spacing to maintain the "Current Canvas" 
+ * editorial aesthetic.
  */
+
 import React from 'react';
 import { AppBar, Toolbar, Typography, Box } from '@mui/material';
+
+// ── Root Component ──────────────────────────────────────────────────────────
 
 export default function TopBar() {
   return (
@@ -21,7 +25,6 @@ export default function TopBar() {
         borderBottom: 'none',
       }}
     >
-
       <Toolbar
         sx={{
           maxWidth: '80rem',
@@ -31,7 +34,8 @@ export default function TopBar() {
           height: 80,
         }}
       >
-        {/* Brand wordmark */}
+        {/* ── Brand Wordmark ────────────────────────────────────────── */}
+        
         <Typography
           variant="h4"
           sx={{
@@ -44,15 +48,14 @@ export default function TopBar() {
             transition: 'color 0.5s ease',
           }}
         >
-
+          {/* Brand name can be placed here if needed */}
         </Typography>
 
-
-
-
-        {/* Spacer — pushes nothing; keeps layout tidy */}
+        {/* ── Layout Utilities ──────────────────────────────────────── */}
+        
         <Box sx={{ flexGrow: 1 }} />
       </Toolbar>
     </AppBar>
   );
 }
+
