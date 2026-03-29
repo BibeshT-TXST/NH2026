@@ -108,7 +108,8 @@ export default function ReflectionPage() {
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#f0f2f0',
+        backgroundColor: 'transparent',
+
         px: { xs: 2, md: '3vw' },
         py: '2vh',
         opacity: mounted ? 1 : 0,

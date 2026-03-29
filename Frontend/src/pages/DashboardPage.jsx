@@ -13,6 +13,9 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import BoxBreathingCard from '../components/shortform/BoxBreathingCard';
 import CognitiveDefusionCard from '../components/shortform/CognitiveDefusionCard';
 import GroundingCarouselCard from '../components/shortform/GroundingCarouselCard';
+import FractalFlowCard from '../components/shortform/FractalFlowCard';
+import PMRCard from '../components/shortform/PMRCard';
+
 
 import EventCard from '../components/longform/EventCard';
 import { events } from '../components/longform/CampusEventsGrid';
@@ -82,7 +85,8 @@ export default function DashboardPage() {
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#f0f2f0',
+        backgroundColor: 'transparent',
+
         px: { xs: 2, md: '3vw' },
         py: '2vh',
         opacity: mounted ? 1 : 0,
@@ -312,6 +316,9 @@ export default function DashboardPage() {
                 {recommendedComponent === 'BoxBreathingCard' && <BoxBreathingCard />}
                 {recommendedComponent === 'CognitiveDefusionCard' && <CognitiveDefusionCard />}
                 {recommendedComponent === 'GroundingCarouselCard' && <GroundingCarouselCard />}
+                {recommendedComponent === 'FractalFlowCard' && <FractalFlowCard />}
+                {recommendedComponent === 'PMRCard' && <PMRCard />}
+
               </Box>
             )}
           </Box>

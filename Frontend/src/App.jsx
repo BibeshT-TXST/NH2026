@@ -1,10 +1,3 @@
-/**
- * App Shell — The Curated Canvas
- *
- * Renders the TopBar and routes pages.
- * The /reflect route is a focused, immersive experience — TopBar is hidden.
- * Paper texture overlay floats above everything for premium editorial grain.
- */
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
@@ -15,6 +8,10 @@ import AuthPage from './pages/AuthPage';
 import ReflectionPage from './pages/ReflectionPage';
 import DashboardPage from './pages/DashboardPage';
 
+// Background system
+import { BackgroundProvider } from './context/BackgroundContext';
+import BackgroundLayer from './components/BackgroundLayer';
+
 // Routes where the TopBar + its padding offset should be hidden
 const NO_NAV_ROUTES = ['/reflect', '/dashboard'];
 
@@ -23,12 +20,15 @@ export default function App() {
   const hideNav = NO_NAV_ROUTES.includes(location.pathname);
 
   return (
-    <>
+    <BackgroundProvider>
+      {/* Background Video/Audio Layer — fixed behind all content */}
+      <BackgroundLayer />
+
       {/* Glassmorphism AppBar — hidden on focused pages */}
       {!hideNav && <TopBar />}
 
-      {/* Page content */}
-      <Box component="div" sx={{ pt: hideNav ? 0 : '80px' }}>
+      {/* Page content — zIndex ensured so it stays above background */}
+      <Box component="div" sx={{ pt: hideNav ? 0 : '80px', position: 'relative', zIndex: 1 }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/get-started" element={<GetStartedPage />} />
@@ -38,8 +38,8 @@ export default function App() {
         </Routes>
       </Box>
 
-      {/* Paper texture overlay — atmospheric grain */}
+      {/* Paper texture overlay — atmospheric grain — floats above everything */}
       <div className="paper-texture" />
-    </>
+    </BackgroundProvider>
   );
 }

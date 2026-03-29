@@ -21,7 +21,8 @@ export default function HomePage() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'background.default', // pure white
+        backgroundColor: 'transparent', // pure white removed to show video
+
         position: 'relative',
         overflow: 'hidden',
         px: 3,

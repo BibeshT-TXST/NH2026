@@ -22,7 +22,8 @@ html {
 }
 
 body {
-  background-color: #ffffff;
+  background-color: transparent;
+
   color: #1a1c1c;
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;

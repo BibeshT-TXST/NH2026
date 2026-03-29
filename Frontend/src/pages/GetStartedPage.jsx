@@ -11,6 +11,8 @@ import { Box, Typography, Container, Stack } from '@mui/material';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import SentimentNeutralIcon from '@mui/icons-material/SentimentNeutral';
+import { useBackground } from '../context/BackgroundContext';
+
 
 /* ── Mood options — each with its own emotional color ─────── */
 /*
@@ -22,41 +24,49 @@ const moods = [
   {
     icon: <SentimentVerySatisfiedIcon sx={{ fontSize: 40 }} />,
     label: 'Its going great',
-    bg:          '#a8e6a1',   // soft mint-green
-    bgHover:     '#8cd684',   // slightly deeper on hover
-    textColor:   '#1b5e20',   // dark forest green text
-    iconColor:   '#2e7d32',   // rich green icon
-    glowShadow:  '0 20px 50px rgba(46, 125, 50, 0.18)',
+    bg: '#a8e6a1',   // soft mint-green
+    bgHover: '#8cd684',   // slightly deeper on hover
+    textColor: '#1b5e20',   // dark forest green text
+    iconColor: '#2e7d32',   // rich green icon
+    glowShadow: '0 20px 50px rgba(46, 125, 50, 0.18)',
     borderHover: '#c8f7c5',
   },
   {
     icon: <SentimentSatisfiedIcon sx={{ fontSize: 40 }} />,
     label: 'Its Going good',
-    bg:          '#fec330',   // warm gold (original)
-    bgHover:     '#f5b800',
-    textColor:   '#6f5100',
-    iconColor:   '#8d6e00',
-    glowShadow:  '0 20px 50px rgba(254, 195, 48, 0.2)',
+    bg: '#fec330',   // warm gold (original)
+    bgHover: '#f5b800',
+    textColor: '#6f5100',
+    iconColor: '#8d6e00',
+    glowShadow: '0 20px 50px rgba(254, 195, 48, 0.2)',
     borderHover: '#ffdfa0',
   },
   {
     icon: <SentimentNeutralIcon sx={{ fontSize: 40 }} />,
     label: 'Its going ok',
-    bg:          '#d4c8f5',   // soft lavender
-    bgHover:     '#c4b5ed',
-    textColor:   '#3a2d6b',   // deep plum text
-    iconColor:   '#5c49a3',   // muted violet icon
-    glowShadow:  '0 20px 50px rgba(92, 73, 163, 0.15)',
+    bg: '#d4c8f5',   // soft lavender
+    bgHover: '#c4b5ed',
+    textColor: '#3a2d6b',   // deep plum text
+    iconColor: '#5c49a3',   // muted violet icon
+    glowShadow: '0 20px 50px rgba(92, 73, 163, 0.15)',
     borderHover: '#e4dcfa',
   },
 ];
 
 export default function GetStartedPage() {
   const navigate = useNavigate();
+  const { setMood } = useBackground();
 
   const handleMoodSelect = (moodLabel) => {
+    const moodMapping = {
+      'Its going great': 'Great',
+      'Its Going good': 'Good',
+      'Its going ok': 'Ok'
+    };
+    setMood(moodMapping[moodLabel] || 'Good');
     navigate(`/auth?mode=signup&mood=${encodeURIComponent(moodLabel)}`);
   };
+
 
   return (
     <Box
@@ -67,7 +77,8 @@ export default function GetStartedPage() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#f9f9f9',
+        backgroundColor: 'transparent',
+
         position: 'relative',
         overflow: 'hidden',
         px: 3,

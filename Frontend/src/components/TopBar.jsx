@@ -12,14 +12,16 @@ export default function TopBar() {
   return (
     <AppBar
       position="fixed"
+      color="transparent"
       sx={{
-        backgroundColor: 'rgba(249, 249, 249, 0.8)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+        backgroundColor: 'transparent',
+        backdropFilter: 'none',
+        WebkitBackdropFilter: 'none',
         boxShadow: 'none',
         borderBottom: 'none',
       }}
     >
+
       <Toolbar
         sx={{
           maxWidth: '80rem',

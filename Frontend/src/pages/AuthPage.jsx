@@ -66,7 +66,8 @@ export default function AuthPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#f9f9f9',
+        backgroundColor: 'transparent',
+
         pt: '80px',
         pb: 6,
         px: { xs: 2, md: 3 },
