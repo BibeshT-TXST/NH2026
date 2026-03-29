@@ -9,15 +9,19 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Fade, CircularProgress } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { useBackground } from '../context/BackgroundContext';
 import { classifyReflection } from '../services/classifyService.js';
 
+
 /* ── Design tokens ───────────────────────────────────────────────── */
-const green = '#00450d';
-const greenMid = '#1b5e20';
-const ink = '#1a1c1c';
-const muted = '#41493e';
-const surface = '#eeeeee';
-const white = '#ffffff';
+// Colors now primarily driven by CSS variables in index.css
+const green = 'var(--accent)';
+const greenMid = 'var(--accent)';
+const ink = 'var(--text-primary)';
+const muted = 'var(--text-secondary)';
+const surface = 'rgba(255, 255, 255, 0.1)';
+const white = 'var(--card-surface)';
+
 
 /* ── Rotating micro-prompts ──────────────────────────────────────── */
 const PROMPTS = [
@@ -48,14 +52,16 @@ export default function ReflectionPage() {
   const navigate = useNavigate();
   const textRef = useRef(null);
 
-  const [text, setText]         = useState('');
-  const [saved, setSaved]       = useState(false);
-  const [loading, setLoading]   = useState(false);
+  const [text, setText] = useState('');
+  const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
-  const [pIdx, setPIdx]         = useState(0);
-  const [fadePrp, setFadePrp]   = useState(true);
-  const [mounted, setMounted]   = useState(false);
+  const [pIdx, setPIdx] = useState(0);
+  const [fadePrp, setFadePrp] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const [greeting, setGreeting] = useState(getGreeting());
+  const { mood } = useBackground();
+
 
   const maxWords = 70;
   const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -104,19 +110,20 @@ export default function ReflectionPage() {
     <Box
       component="main"
       sx={{
-        height: '100vh',
-        overflow: 'hidden',
+        minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#f0f2f0',
+        backgroundColor: 'transparent',
         px: { xs: 2, md: '3vw' },
-        py: '2vh',
+        pt: '100px', // More space for TopBar
+        pb: '5vh',
         opacity: mounted ? 1 : 0,
         transform: mounted ? 'translateY(0)' : 'translateY(8px)',
         transition: 'opacity 0.45s ease, transform 0.45s ease',
         boxSizing: 'border-box',
       }}
     >
+
       {/* ── Max-width wrapper ──────────────────────────────────────── */}
       <Box sx={{
         maxWidth: 1200,
@@ -140,9 +147,9 @@ export default function ReflectionPage() {
             onClick={() => navigate('/dashboard')}
             sx={{
               fontFamily: '"Manrope", sans-serif',
-              fontWeight: 800,
-              fontSize: '1.1rem',
-              color: green,
+              fontWeight: 850,
+              fontSize: '1.25rem',
+              color: 'var(--text-primary)',
               letterSpacing: '-0.02em',
               cursor: 'pointer',
               transition: 'opacity 0.15s ease',
@@ -151,16 +158,20 @@ export default function ReflectionPage() {
           >
             Lets Build Us
           </Typography>
+
+
           <Typography sx={{
             fontFamily: '"Inter", sans-serif',
-            fontSize: '0.72rem',
-            fontWeight: 600,
-            color: 'rgba(65,73,62,0.65)',
+            fontSize: '0.85rem',
+            fontWeight: 800,
+            color: 'var(--text-secondary)',
             letterSpacing: '0.07em',
             textTransform: 'uppercase',
           }}>
             {todayStr}
           </Typography>
+
+
         </Box>
 
         {/* ══════════════════════════════════════════════════════════
@@ -168,13 +179,11 @@ export default function ReflectionPage() {
             Left: 1fr   Right: 260px fixed
         ══════════════════════════════════════════════════════════ */}
         <Box sx={{
-          flex: 1,
           display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: '1fr 252px' },
-          gridTemplateRows: '1fr',
-          gap: '10px',
-          minHeight: 0, // critical: allows grid to stay within flex container
+          gridTemplateColumns: { xs: '1fr', md: '1fr 300px' },
+          gap: '20px',
         }}>
+
 
           {/* ── LEFT COLUMN ─────────────────────────────────────── */}
           <Box sx={{
@@ -185,57 +194,69 @@ export default function ReflectionPage() {
           }}>
 
             {/* CARD 1 — Header ─────────────────────────────────── */}
-            <Box sx={{ ...card({ p: '18px 24px 15px', flexShrink: 0 }) }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                <AutoAwesomeIcon sx={{ fontSize: 10, color: green, opacity: 0.65 }} />
+            <Box sx={{ ...card({ p: '32px 40px', flexShrink: 0, backdropFilter: 'blur(10px)' }) }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                <AutoAwesomeIcon sx={{ fontSize: 16, color: 'var(--accent)', opacity: 0.9 }} />
                 <Typography sx={{
                   fontFamily: '"Manrope", sans-serif',
-                  fontWeight: 700,
-                  fontSize: '0.55rem',
-                  color: green,
+                  fontWeight: 850,
+                  fontSize: '0.85rem',
+                  color: 'var(--accent)',
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
                 }}>
                   Daily Practice
                 </Typography>
               </Box>
+
+
               <Typography sx={{
                 fontFamily: '"Manrope", sans-serif',
-                fontWeight: 800,
-                fontSize: { xs: '1.35rem', md: '1.7rem' },
-                lineHeight: 1.22,
+                fontWeight: 850,
+                fontSize: { xs: '1.75rem', md: '2.5rem' },
+                lineHeight: 1.1,
                 letterSpacing: '-0.025em',
-                color: ink,
+                color: 'var(--text-primary)',
               }}>
-                {greeting}. How are we doing today? Tell us what is on your mind.
+                {greeting}. {
+                  mood === 'Great' ? "Fantastic. What's adding to your light today?" :
+                  mood === 'Good'  ? "Steady rhythm. What is on your mind?" :
+                  "Stillness. Share whatever is surfacing for you."
+                }
               </Typography>
+
+
+
             </Box>
+
 
             {/* CARD 2 — Writing canvas ─────────────────────────── */}
             <Box sx={{
               ...card({
-                p: '18px 20px 14px',
+                p: '40px',
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
-                minHeight: 0,
+                backdropFilter: 'blur(10px)',
               }),
             }}>
               {/* Rotating micro-prompt */}
               <Box sx={{
-                mb: 1.5,
-                flexShrink: 0,
+                mb: 2.5,
                 opacity: fadePrp ? 1 : 0,
                 transition: 'opacity 0.38s ease',
               }}>
                 <Typography sx={{
                   fontFamily: '"Inter", sans-serif',
-                  fontSize: '0.75rem',
-                  color: 'rgba(65,73,62,0.42)',
+                  fontWeight: 800,
+                  fontSize: '1.1rem',
+                  color: 'var(--text-secondary)',
                   fontStyle: 'italic',
                 }}>
                   {PROMPTS[pIdx]}
                 </Typography>
+
+
               </Box>
 
               {/* Textarea — grows to fill card */}
@@ -248,27 +269,29 @@ export default function ReflectionPage() {
                 sx={{
                   flex: 1,
                   width: '100%',
-                  backgroundColor: surface,
-                  border: 'none',
-                  borderRadius: '10px',
-                  p: '16px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  border: '2px solid rgba(0,0,0,0.05)',
+                  borderRadius: '16px',
+                  p: '24px',
                   fontFamily: '"Inter", sans-serif',
-                  fontSize: '0.975rem',
-                  lineHeight: 1.75,
-                  color: ink,
+                  fontSize: '1.15rem',
+                  fontWeight: 500,
+                  lineHeight: 1.8,
+                  color: 'var(--text-primary)',
                   resize: 'none',
                   outline: 'none',
-                  minHeight: 0,
-                  transition: 'background-color 0.25s ease, box-shadow 0.25s ease',
+                  minHeight: 300,
+                  transition: 'all 0.3s ease',
                   '&:focus': {
-                    backgroundColor: '#e5e5e5',
-                    boxShadow: `0 0 0 2px rgba(0,69,13,0.1)`,
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    borderColor: 'var(--accent)',
                   },
-                  '&::placeholder': { color: 'rgba(65,73,62,0.3)' },
+                  '&::placeholder': { color: 'var(--text-secondary)', opacity: 0.5 },
                   display: 'block',
                   boxSizing: 'border-box',
                 }}
               />
+
 
               {/* Word count + over-limit */}
               <Box sx={{
@@ -293,13 +316,15 @@ export default function ReflectionPage() {
                 )}
                 <Typography sx={{
                   fontFamily: '"Inter", sans-serif',
-                  fontSize: '0.75rem',
-                  fontWeight: 500,
-                  color: overLimit ? '#ba1a1a' : 'rgba(65,73,62,0.38)',
+                  fontSize: '0.85rem',
+                  fontWeight: 800,
+                  color: 'var(--text-secondary)',
                   transition: 'color 0.2s ease',
                 }}>
                   {wordCount} / {maxWords} words
                 </Typography>
+
+
               </Box>
             </Box>
 
@@ -312,34 +337,35 @@ export default function ReflectionPage() {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 1.5,
+                  gap: 2,
                   backgroundColor: saved
-                    ? '#1b5e20'
+                    ? 'var(--accent)'
                     : isEmpty
-                      ? '#9aab94'
-                      : '#00450d',
+                      ? 'rgba(0,0,0,0.1)'
+                      : 'var(--accent)',
                   color: white,
-                  px: '28px',
-                  py: '11px',
-                  borderRadius: '10px',
+                  px: '40px',
+                  py: '18px',
+                  borderRadius: '14px',
                   fontFamily: '"Manrope", sans-serif',
-                  fontWeight: 700,
-                  fontSize: '0.9rem',
+                  fontWeight: 800,
+                  fontSize: '1.1rem',
                   letterSpacing: '0.01em',
                   border: 'none',
                   cursor: isEmpty || loading ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s ease',
-                  boxShadow: isEmpty || saved || loading ? 'none' : '0 4px 18px rgba(0,69,13,0.28)',
+                  transition: 'all 0.3s ease',
+                  boxShadow: isEmpty || saved || loading ? 'none' : '0 10px 30px rgba(0,0,0,0.15)',
                   '&:hover:not(:disabled)': {
-                    backgroundColor: '#005a10',
-                    transform: 'translateY(-1px)',
-                    boxShadow: '0 7px 26px rgba(0,69,13,0.35)',
+                    filter: 'brightness(1.1)',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 15px 40px rgba(0,0,0,0.2)',
                   },
                   '&:active': { transform: 'scale(0.97)' },
                 }}
               >
-                {loading ? <CircularProgress size={20} color="inherit" /> : saved ? 'Lets build us' : 'Lets build us'}
+                {loading ? <CircularProgress size={20} color="inherit" /> : 'Lets build us'}
               </Box>
+
             </Box>
             {apiError && (
               <Fade in>
@@ -362,21 +388,26 @@ export default function ReflectionPage() {
             <Box sx={{ ...card({ p: '20px 18px', flexShrink: 0 }) }}>
               <Typography sx={{
                 fontFamily: '"Manrope", sans-serif',
-                fontWeight: 700,
-                fontSize: '0.78rem',
-                color: ink,
+                fontWeight: 850,
+                fontSize: '0.85rem',
+                color: 'var(--text-primary)',
                 mb: 1.25,
               }}>
                 Why we reflect
               </Typography>
+
+
               <Typography sx={{
                 fontFamily: '"Inter", sans-serif',
-                fontSize: '0.78rem',
+                fontSize: '0.85rem',
+                fontWeight: 800,
                 lineHeight: 1.68,
-                color: muted,
+                color: 'var(--text-secondary)',
               }}>
-                Expressive writing for just a few minutes activates emotional processing, lowers cortisol, and builds self-awareness over time. The 70-word limit is intentional — constraints sharpen clarity.
+                Expressive writing for just a few minutes activates emotional processing, lowers cortisol, and builds self-awareness over time. The 70-word limit is intentional, constraints sharpen clarity.
               </Typography>
+
+
             </Box>
 
             {/* CARD 5 — Research quote ────────────────────────── */}
@@ -387,20 +418,21 @@ export default function ReflectionPage() {
             }}>
               <Typography sx={{
                 fontFamily: '"Inter", sans-serif',
-                fontSize: '0.6rem',
-                fontWeight: 700,
+                fontSize: '0.85rem',
+                fontWeight: 850,
                 textTransform: 'uppercase',
                 letterSpacing: '0.1em',
-                color: 'rgba(0,69,13,0.45)',
+                color: 'var(--text-primary)',
                 mb: 1.25,
               }}>
                 Research Note
               </Typography>
               <Typography sx={{
                 fontFamily: '"Inter", sans-serif',
-                fontSize: '0.78rem',
+                fontSize: '0.85rem',
+                fontWeight: 800,
                 lineHeight: 1.65,
-                color: muted,
+                color: 'var(--text-secondary)',
                 fontStyle: 'italic',
                 mb: 1.25,
               }}>
@@ -408,11 +440,14 @@ export default function ReflectionPage() {
               </Typography>
               <Typography sx={{
                 fontFamily: '"Inter", sans-serif',
-                fontSize: '0.65rem',
-                color: 'rgba(65,73,62,0.42)',
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                color: 'var(--text-secondary)',
               }}>
                 — Lieberman et al., 2007 · UCLA
               </Typography>
+
+
             </Box>
 
             {/* CARD 6 — Editorial image (fills remaining space) ── */}
@@ -446,12 +481,15 @@ export default function ReflectionPage() {
                 bottom: 12,
                 left: 14,
                 fontFamily: '"Inter", sans-serif',
-                fontSize: '0.65rem',
-                color: 'rgba(65,73,62,0.55)',
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                color: 'var(--text-secondary)',
                 fontStyle: 'italic',
+
               }}>
                 Make space for stillness.
               </Typography>
+
             </Box>
 
             {/* CARD 7 — Privacy note ──────────────────────────── */}
@@ -467,12 +505,15 @@ export default function ReflectionPage() {
               <Typography sx={{ fontSize: '0.8rem', lineHeight: 1 }}>🔒</Typography>
               <Typography sx={{
                 fontFamily: '"Inter", sans-serif',
-                fontSize: '0.7rem',
-                color: 'rgba(65,73,62,0.42)',
+                fontSize: '0.8rem',
+                fontWeight: 800,
+                color: 'var(--text-secondary)',
                 lineHeight: 1.45,
+
               }}>
                 This reflection is private. Only you can see it.
               </Typography>
+
             </Box>
           </Box>
 

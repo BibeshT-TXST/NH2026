@@ -14,6 +14,8 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // Use gemini-2.5-flash — fast, cheap, perfect for classification tasks
 const model = genAI.getGenerativeModel({
   model: 'gemini-2.5-flash',
+
+
   generationConfig: {
     temperature: 0.3,       // Low temp = consistent, deterministic classification
     responseMimeType: 'application/json',

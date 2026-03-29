@@ -21,32 +21,42 @@ export const COMPONENT_REGISTRY = {
     description: 'A 5-4-3-2-1 sensory grounding exercise. The user names things they can see, touch, hear, smell, and taste. Best for dissociation, feeling disconnected from reality, panic attacks, feeling not present, emotional numbness, or when someone needs to anchor to the current moment.',
     keywords: ['disconnected', 'not present', 'dissociated', 'numb', 'floating', 'unreal', 'panic', 'spaced out', 'lost', 'fog', 'not myself', 'detached'],
   },
+  FractalFlowCard: {
+    name: 'FractalFlowCard',
+    description: 'A neuro-visual relaxation exercise using fractal geometry. Triggers parasympathetic relaxation and effortless attention. Best for brain fog, screen fatigue, sensory overload, mental exhaustion, or needing a gentle transition from high stress to calm.',
+    keywords: ['fatigue', 'tired eyes', 'brain fog', 'screen fatigue', 'sensory overload', 'exhausted', 'mental block', 'unwind', 'soften focus', 'visual stress'],
+  },
+  PMRCard: {
+    name: 'PMRCard',
+    description: 'A Progressive Muscle Relaxation (PMR) exercise. Uses intense muscle tensing followed by sudden release to create a rebound effect that lowers cortisol. Best for physical somatic anxiety, muscle tension, clenching, stored physical stress, or resetting a highly activated nervous system.',
+    keywords: ['tense muscles', 'clenching', 'tight shoulders', 'physical stress', 'tightness', 'somatic', 'stressed body', 'body tension', 'need a reset'],
+  },
 };
 
 export const LONGFORM_REGISTRY = {
   "The Buddy Circle": {
     name: "The Buddy Circle",
-    description: "A warm, no-pressure hangout for students who find it hard to make friends. Share stories, play games, and build genuine connections at your own pace."
+    description: "A warm, no-pressure hangout for students and young people who find it hard to make friends in the city. Share stories, play light games, and build genuine connections at your own pace."
   },
   "Study Together Club": {
     name: "Study Together Club",
-    description: "Struggle with coursework? Join peers who get it. We pair you with patient study partners and break tough subjects into bite-sized pieces — no judgement."
+    description: "Struggle with coursework or exam prep? Join peers who understand the pressure. We pair you with patient study partners and break tough subjects into manageable pieces — no judgement."
   },
   "Safe Space Sessions": {
     name: "Safe Space Sessions",
-    description: "Guided group sessions led by a trained counselor. Talk about loneliness, academic stress, or just listen. Everything shared here stays here."
+    description: "Guided group sessions by trained counselors. Talk about loneliness, academic stress, or just listen. Everything shared here stays here."
   },
   "Quiet Coffee Corner": {
     name: "Quiet Coffee Corner",
-    description: "Not everyone thrives in loud crowds. Enjoy a calm café atmosphere with lo-fi music, free coffee, and friendly faces who understand introversion."
+    description: "Not everyone thrives in loud crowds. Enjoy a calm café atmosphere with lo-fi music, affordable coffee, and friendly faces who understand introversion and city life. Regular informal meetups happen here."
   },
   "Mindful Focus Workshop": {
     name: "Mindful Focus Workshop",
-    description: "Learn practical techniques for managing exam anxiety, improving concentration, and building a study routine that actually works for your brain."
+    description: "Learn practical techniques for managing exam anxiety, improving concentration, and building a study routine — with guided meditation and discussion groups at Kopan Monastery."
   },
   "Morning Walk & Talk": {
     name: "Morning Walk & Talk",
-    description: "Start your day with a gentle campus walk alongside others. Movement eases anxiety, and a little sunlight goes a long way for your mood."
+    description: "Start your day with a gentle walk alongside others in the fresh Kathmandu air. Movement eases anxiety, and a little morning sunlight goes a long way for your mood. Open to all."
   }
 };
 /**

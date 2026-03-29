@@ -66,7 +66,8 @@ export default function AuthPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#f9f9f9',
+        backgroundColor: 'transparent',
+
         pt: '80px',
         pb: 6,
         px: { xs: 2, md: 3 },
@@ -78,12 +79,15 @@ export default function AuthPage() {
           maxWidth: 1040,
           display: 'grid',
           gridTemplateColumns: { xs: '1fr', md: '5fr 7fr' },
+          backgroundColor: 'var(--card-surface)',
+          backdropFilter: 'blur(16px) saturate(120%)',
+          borderRadius: '24px',
+          boxShadow: '0 40px 100px -20px rgba(0,0,0,0.12)',
+          border: '1px solid rgba(255,255,255,0.1)',
           overflow: 'hidden',
-          backgroundColor: '#ffffff',
-          borderRadius: '12px',
-          boxShadow: '0 40px 100px -20px rgba(0,0,0,0.05)',
         }}
       >
+
         {/* ═══════════════════════════════════════════════════════
             LEFT — Brand / Atmospheric panel (desktop only)
         ═══════════════════════════════════════════════════════ */}
@@ -92,12 +96,12 @@ export default function AuthPage() {
             display: { xs: 'none', md: 'flex' },
             flexDirection: 'column',
             justifyContent: 'space-between',
-            background: 'linear-gradient(135deg, #00450d 0%, #1b5e20 100%)',
+            background: 'var(--accent)',
             p: 6,
             position: 'relative',
-            overflow: 'hidden',
           }}
         >
+
           {/* Decorative blur */}
           <Box
             sx={{
@@ -117,31 +121,36 @@ export default function AuthPage() {
             <Typography
               sx={{
                 fontFamily: '"Manrope", sans-serif',
-                fontWeight: 800,
-                fontSize: '2.5rem',
-                color: '#ffffff',
-                lineHeight: 1.15,
+                fontWeight: 850,
+                fontSize: '2.75rem',
+                color: 'var(--text-primary)',
+                lineHeight: 1.1,
                 letterSpacing: '-0.02em',
                 mb: 3,
               }}
             >
+
               Your mind
               <br />
               deserves a
               <br />
               safe space.
             </Typography>
+
             <Typography
               sx={{
                 fontFamily: '"Inter", sans-serif',
-                color: 'rgba(172, 244, 164, 0.75)',
-                fontSize: '1rem',
+                color: 'var(--text-secondary)',
+                fontWeight: 600,
+                fontSize: '1.1rem',
                 lineHeight: 1.6,
-                maxWidth: 280,
+                maxWidth: 300,
               }}
             >
               A curated space to check in with yourself, grow with intention, and build the life you want.
             </Typography>
+
+
           </Box>
 
           {/* Bottom accent */}
@@ -174,14 +183,15 @@ export default function AuthPage() {
             </Box>
             <Typography
               sx={{
-                color: '#ffffff',
+                color: 'var(--text-primary)',
                 fontSize: '0.85rem',
-                fontWeight: 500,
+                fontWeight: 600,
                 fontFamily: '"Inter", sans-serif',
               }}
             >
               Join a growing community of self-builders.
             </Typography>
+
           </Box>
         </Box>
 
@@ -202,15 +212,16 @@ export default function AuthPage() {
               <Typography
                 sx={{
                   fontFamily: '"Manrope", sans-serif',
-                  fontWeight: 800,
-                  fontSize: '1.875rem',
-                  color: '#1a1c1c',
+                  fontWeight: 850,
+                  fontSize: '2.25rem',
+                  color: 'var(--text-primary)',
                   letterSpacing: '-0.02em',
-                  mb: 1,
+                  mb: 1.5,
                 }}
               >
-                {isLogin ? 'Welcome back' : 'Create your account'}
+                {isLogin ? 'Welcome back' : 'Create account'}
               </Typography>
+
               <Typography
                 sx={{
                   fontFamily: '"Inter", sans-serif',
@@ -452,34 +463,35 @@ export default function AuthPage() {
                 </Box>
 
                 {/* ── Submit button ───────────────────────────── */}
-                <Box
-                  component="button"
-                  type="submit"
-                  sx={{
-                    width: '100%',
-                    height: 56,
-                    background:
-                      'linear-gradient(135deg, #00450d 0%, #1b5e20 100%)',
-                    color: '#ffffff',
-                    fontFamily: '"Manrope", sans-serif',
-                    fontWeight: 700,
-                    fontSize: '1rem',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: '0 4px 20px rgba(0, 69, 13, 0.12)',
-                    '&:hover': {
-                      opacity: 0.92,
-                      boxShadow: '0 6px 28px rgba(0, 69, 13, 0.18)',
-                    },
-                    '&:active': {
-                      transform: 'scale(0.98)',
-                    },
-                  }}
-                >
-                  {isLogin ? 'Login' : 'Create account'}
-                </Box>
+                  <Box
+                    component="button"
+                    type="submit"
+                    sx={{
+                      width: '100%',
+                      height: 64,
+                      backgroundColor: 'var(--accent)',
+                      color: '#ffffff',
+                      fontFamily: '"Manrope", sans-serif',
+                      fontWeight: 800,
+                      fontSize: '1.15rem',
+                      border: 'none',
+                      borderRadius: '12px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                      '&:hover': {
+                        filter: 'brightness(1.1)',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 12px 32px rgba(0,0,0,0.2)',
+                      },
+                      '&:active': {
+                        transform: 'scale(0.97)',
+                      },
+                    }}
+                  >
+                    {isLogin ? 'Login' : 'Create account'}
+                  </Box>
+
               </Stack>
             </Box>
 

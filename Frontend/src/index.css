@@ -21,17 +21,57 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root[data-mood="great"] {
+  --bg-overlay: rgba(245, 240, 232, 0.4);
+  --card-surface: rgba(255, 255, 255, 0.9);
+  --accent: #C8920A;
+  --text-primary: #121410;
+  --text-secondary: #4A4A4A;
+}
+
+
+:root[data-mood="good"] {
+  --bg-overlay: rgba(237, 232, 224, 0.4);
+  --card-surface: rgba(255, 255, 255, 0.9);
+  --accent: #D4620C;
+  --text-primary: #121410;
+  --text-secondary: #4A4A4A;
+}
+
+
+:root[data-mood="ok"] {
+  --bg-overlay: rgba(26, 24, 40, 0.6);
+  --card-surface: rgba(255, 255, 255, 0.9);
+  --accent: #E8600A;
+  --text-primary: #121410;
+  --text-secondary: #4A4A4A;
+}
+
+
+/* Fallback / Default (Good) */
+:root {
+  --bg-overlay: rgba(237, 232, 224, 0.4);
+  --card-surface: rgba(255, 255, 255, 0.9);
+  --accent: #D4620C;
+  --text-primary: #121410;
+  --text-secondary: #4A4A4A;
+}
+
+
 body {
-  background-color: #ffffff;
-  color: #1a1c1c;
+  background-color: transparent;
+  color: var(--text-primary);
   font-family: 'Inter', sans-serif;
+  font-size: 16px;
   overflow-x: hidden;
+  transition: color 0.5s ease;
 }
 
 ::selection {
-  background-color: #ffdfa0;
-  color: #1a1c1c;
+  background-color: var(--accent);
+  color: #ffffff;
 }
+
 
 /* ── Atmospheric paper texture overlay ────────────────────── */
 .paper-texture {
