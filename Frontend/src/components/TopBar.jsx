@@ -36,14 +36,19 @@ export default function TopBar() {
           variant="h4"
           sx={{
             fontFamily: '"Manrope", sans-serif',
-            fontWeight: 800,
-            color: 'primary.main',
+            fontWeight: 850,
+            fontSize: '1.5rem',
+            color: 'var(--text-primary)',
             letterSpacing: '-0.02em',
             userSelect: 'none',
+            transition: 'color 0.5s ease',
           }}
         >
-          Lets Build Us
+
         </Typography>
+
+
+
 
         {/* Spacer — pushes nothing; keeps layout tidy */}
         <Box sx={{ flexGrow: 1 }} />

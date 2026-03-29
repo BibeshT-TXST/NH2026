@@ -4,8 +4,8 @@ import { Box } from '@mui/material';
 import TopBar from './components/TopBar';
 import HomePage from './pages/HomePage';
 import GetStartedPage from './pages/GetStartedPage';
-import AuthPage from './pages/AuthPage';
 import ReflectionPage from './pages/ReflectionPage';
+
 import DashboardPage from './pages/DashboardPage';
 
 // Background system
@@ -32,8 +32,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/get-started" element={<GetStartedPage />} />
-          <Route path="/auth" element={<AuthPage />} />
           <Route path="/reflect" element={<ReflectionPage />} />
+
           <Route path="/dashboard" element={<DashboardPage />} />
         </Routes>
       </Box>

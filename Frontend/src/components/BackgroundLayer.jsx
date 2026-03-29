@@ -47,9 +47,9 @@ export default function BackgroundLayer() {
           const handleFirstClick = () => {
             if (primaryAudioRef.current) primaryAudioRef.current.play();
             if (primaryVideoRef.current) primaryVideoRef.current.play();
-            window.removeEventListener('click', handleFirstClick);
+            window.removeEventListener('mousedown', handleFirstClick);
           };
-          window.addEventListener('click', handleFirstClick);
+          window.addEventListener('mousedown', handleFirstClick);
         });
       }
     }
@@ -57,7 +57,15 @@ export default function BackgroundLayer() {
     if (primaryVideoRef.current) {
         primaryVideoRef.current.playbackRate = config.speed;
     }
+
+    return () => {
+      // Robust cleanup on unmount
+      if (primaryAudioRef.current) primaryAudioRef.current.pause();
+      if (secondaryAudioRef.current) secondaryAudioRef.current.pause();
+      if (transitionRef.current) clearInterval(transitionRef.current);
+    };
   }, []);
+
 
   useEffect(() => {
     const currentMood = isPrimaryActive ? primary.mood : secondary.mood;
@@ -120,25 +128,50 @@ export default function BackgroundLayer() {
       if (progress >= 1) {
         progress = 1;
         clearInterval(transitionRef.current);
+        
+        // Final sanity check: explicitly pause the "from" layer
+        if (toSecondary) {
+          if (primaryAudioRef.current) {
+              primaryAudioRef.current.pause();
+              primaryAudioRef.current.volume = 0;
+          }
+          if (primaryVideoRef.current) primaryVideoRef.current.pause();
+        } else {
+          if (secondaryAudioRef.current) {
+              secondaryAudioRef.current.pause();
+              secondaryAudioRef.current.volume = 0;
+          }
+          if (secondaryVideoRef.current) secondaryVideoRef.current.pause();
+        }
       }
 
       // Smooth step easing
       const ease = progress * progress * (3 - 2 * progress);
 
       if (toSecondary) {
-        setPrimary(prev => ({ ...prev, opacity: 1 - ease, volume: fromConfig.volume * (1 - ease) }));
-        setSecondary(prev => ({ ...prev, opacity: ease, volume: toConfig.volume * ease }));
+        const fromVol = Math.max(0, fromConfig.volume * (1 - ease));
+        const toVol = toConfig.volume * ease;
+        setPrimary(prev => ({ ...prev, opacity: 1 - ease, volume: fromVol }));
+        setSecondary(prev => ({ ...prev, opacity: ease, volume: toVol }));
       } else {
-        setSecondary(prev => ({ ...prev, opacity: 1 - ease, volume: fromConfig.volume * (1 - ease) }));
-        setPrimary(prev => ({ ...prev, opacity: ease, volume: toConfig.volume * ease }));
+        const fromVol = Math.max(0, fromConfig.volume * (1 - ease));
+        const toVol = toConfig.volume * ease;
+        setSecondary(prev => ({ ...prev, opacity: 1 - ease, volume: fromVol }));
+        setPrimary(prev => ({ ...prev, opacity: ease, volume: toVol }));
       }
     }, interval);
   };
 
   useEffect(() => {
-    if (primaryAudioRef.current) primaryAudioRef.current.volume = primary.volume;
-    if (secondaryAudioRef.current) secondaryAudioRef.current.volume = secondary.volume;
+    // Sync volumes directly to refs for immediate response
+    if (primaryAudioRef.current) {
+        primaryAudioRef.current.volume = Math.min(1, Math.max(0, primary.volume));
+    }
+    if (secondaryAudioRef.current) {
+        secondaryAudioRef.current.volume = Math.min(1, Math.max(0, secondary.volume));
+    }
   }, [primary.volume, secondary.volume]);
+
 
   return (
     <div className="background-layer" style={{
@@ -207,9 +240,11 @@ export default function BackgroundLayer() {
         left: 0,
         width: '100%',
         height: '100%',
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)',
-        backdropFilter: 'blur(2px) saturate(105%)'
+        background: 'var(--bg-overlay)',
+        backdropFilter: 'blur(2px) saturate(105%)',
+        transition: 'background 0.5s ease',
       }} />
+
 
     </div>
   );

@@ -5,10 +5,16 @@ const BackgroundContext = createContext();
 export const BackgroundProvider = ({ children }) => {
   const [mood, setMood] = useState('Good');
 
+  // Sync mood with data-mood attribute on :root
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-mood', mood.toLowerCase());
+  }, [mood]);
+
   return (
     <BackgroundContext.Provider value={{ mood, setMood }}>
       {children}
     </BackgroundContext.Provider>
+
   );
 };
 

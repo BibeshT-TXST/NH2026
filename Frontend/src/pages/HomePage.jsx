@@ -21,11 +21,10 @@ export default function HomePage() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'transparent', // pure white removed to show video
-
+        backgroundColor: 'transparent',
         position: 'relative',
-        overflow: 'hidden',
         px: 3,
+        py: 8, // added padding for scrolling
       }}
     >
       {/* ── Atmospheric glow blobs ─────────────────────────── */}
@@ -36,7 +35,8 @@ export default function HomePage() {
           height: 320,
           top: -96,
           left: -96,
-          background: 'rgba(248, 189, 42, 0.08)',
+          background: 'var(--accent)',
+          opacity: 0.05,
         }}
       />
       <Box
@@ -46,7 +46,8 @@ export default function HomePage() {
           height: 400,
           bottom: -96,
           right: -96,
-          background: 'rgba(0, 69, 13, 0.04)',
+          background: 'var(--accent)',
+          opacity: 0.03,
         }}
       />
 
@@ -65,36 +66,40 @@ export default function HomePage() {
           sx={{
             mb: { xs: 5, md: 7 },
             mt: 4,
+            fontSize: { xs: '5.5rem', md: '7rem' },
+            fontWeight: 850,
+            color: 'var(--text-primary)',
+            letterSpacing: '-0.04em',
+            transition: 'color 0.5s ease',
           }}
         >
           Lets Build Us
         </Typography>
 
+
+
         {/* CTA — Velvet gradient → navigates to /get-started */}
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Button
             variant="contained"
-            color="primary"
             size="large"
             onClick={() => navigate('/get-started')}
             sx={{
-              px: { xs: 5, md: 6 },
-              py: { xs: 1.8, md: 2.2 },
-              fontSize: { xs: '1rem', md: '1.125rem' },
-              borderRadius: '6px',
-              position: 'relative',
-              overflow: 'hidden',
-              /* Shimmer overlay on hover */
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                inset: 0,
-                background: 'rgba(255,255,255,0.1)',
-                opacity: 0,
-                transition: 'opacity 0.25s ease',
-              },
-              '&:hover::after': {
-                opacity: 1,
+              px: { xs: 6, md: 8 },
+              py: { xs: 2.2, md: 2.8 },
+              fontSize: { xs: '1.1rem', md: '1.25rem' },
+              fontWeight: 800,
+              borderRadius: '12px',
+              backgroundColor: 'var(--accent)',
+              color: '#ffffff',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
+              transition: 'all 0.3s ease',
+              textTransform: 'lowercase',
+              '&:hover': {
+                backgroundColor: 'var(--accent)',
+                transform: 'translateY(-2px)',
+                boxShadow: '0 15px 40px rgba(0,0,0,0.2)',
+                filter: 'brightness(1.1)',
               },
             }}
           >
@@ -103,5 +108,6 @@ export default function HomePage() {
         </Box>
       </Container>
     </Box>
+
   );
 }

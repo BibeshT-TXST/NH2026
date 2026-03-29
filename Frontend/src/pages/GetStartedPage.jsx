@@ -64,8 +64,9 @@ export default function GetStartedPage() {
       'Its going ok': 'Ok'
     };
     setMood(moodMapping[moodLabel] || 'Good');
-    navigate(`/auth?mode=signup&mood=${encodeURIComponent(moodLabel)}`);
+    navigate('/reflect');
   };
+
 
 
   return (
@@ -78,12 +79,10 @@ export default function GetStartedPage() {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'transparent',
-
         position: 'relative',
-        overflow: 'hidden',
         px: 3,
-        pt: '80px',   /* AppBar offset */
-        pb: '96px',
+        pt: '100px',
+        pb: '100px',
       }}
     >
       {/* ── Centered radial glow (behind content) ──────────── */}
@@ -97,7 +96,7 @@ export default function GetStartedPage() {
           width: '100%',
           maxWidth: '72rem',
           aspectRatio: '1 / 1',
-          opacity: 0.03,
+          opacity: 0.05,
           pointerEvents: 'none',
         }}
       >
@@ -106,39 +105,11 @@ export default function GetStartedPage() {
             width: '100%',
             height: '100%',
             borderRadius: '50%',
-            background: 'linear-gradient(to top right, #00450d, #795900)',
+            background: 'var(--accent)',
             filter: 'blur(120px)',
           }}
         />
       </Box>
-
-      {/* ── Floating accent blobs ──────────────────────────── */}
-      <Box
-        sx={{
-          position: 'fixed',
-          top: '15%',
-          right: '5%',
-          width: 128,
-          height: 128,
-          borderRadius: '50%',
-          background: 'rgba(255, 223, 160, 0.1)',
-          filter: 'blur(24px)',
-          pointerEvents: 'none',
-        }}
-      />
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: '10%',
-          left: '10%',
-          width: 192,
-          height: 192,
-          borderRadius: '50%',
-          background: 'rgba(172, 244, 164, 0.1)',
-          filter: 'blur(24px)',
-          pointerEvents: 'none',
-        }}
-      />
 
       {/* ── Content ────────────────────────────────────────── */}
       <Container
@@ -155,12 +126,13 @@ export default function GetStartedPage() {
             variant="h1"
             sx={{
               fontFamily: '"Manrope", sans-serif',
-              fontWeight: 800,
-              fontSize: { xs: '3.5rem', md: '5rem' },
-              color: '#1a1c1c',
+              fontWeight: 850,
+              fontSize: { xs: '4.5rem', md: '6rem' },
+              color: 'var(--text-primary)',
               letterSpacing: '-0.04em',
               lineHeight: 1.1,
               mb: { xs: 3, md: 4 },
+              transition: 'color 0.5s ease',
             }}
           >
             How are we feeling today?
@@ -170,22 +142,24 @@ export default function GetStartedPage() {
             variant="body1"
             sx={{
               fontFamily: '"Inter", sans-serif',
-              color: '#41493e',
-              fontSize: { xs: '1rem', md: '1.25rem' },
-              maxWidth: 560,
+              color: 'var(--text-secondary)',
+              fontWeight: 800,
+              fontSize: { xs: '1.1rem', md: '1.35rem' },
+              maxWidth: 600,
               mx: 'auto',
-              opacity: 0.8,
               lineHeight: 1.6,
             }}
           >
             A moment of reflection to anchor your journey. Choose the state that resonates most with your present self.
           </Typography>
+
+
         </Box>
 
         {/* Mood Buttons — each with its own emotional color */}
         <Stack
           direction={{ xs: 'column', md: 'row' }}
-          spacing={3}
+          spacing={4}
           sx={{
             justifyContent: 'center',
             alignItems: 'center',
@@ -204,47 +178,35 @@ export default function GetStartedPage() {
                 justifyContent: 'center',
                 backgroundColor: mood.bg,
                 color: mood.iconColor,
-                px: 5,
-                py: 4,
-                borderRadius: '8px',
-                minWidth: 240,
+                px: 6,
+                py: 5,
+                borderRadius: '16px',
+                minWidth: 260,
                 width: { xs: '100%', md: 'auto' },
                 position: 'relative',
-                overflow: 'hidden',
-                transition: 'all 0.3s ease',
+                transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                 border: 'none',
                 cursor: 'pointer',
                 outline: 'none',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
                 '&:hover': {
                   backgroundColor: mood.bgHover,
-                  transform: 'scale(1.02)',
+                  transform: 'translateY(-8px) scale(1.03)',
                   boxShadow: mood.glowShadow,
                 },
                 '&:active': {
-                  transform: 'scale(0.95)',
-                },
-                '&::after': {
-                  content: '""',
-                  position: 'absolute',
-                  inset: 0,
-                  borderRadius: '8px',
-                  border: '2px solid transparent',
-                  transition: 'border-color 0.3s ease',
-                  pointerEvents: 'none',
-                },
-                '&:hover::after': {
-                  borderColor: mood.borderHover,
+                  transform: 'scale(0.96)',
                 },
               }}
             >
-              <Box sx={{ mb: 2, color: mood.iconColor }}>
+              <Box sx={{ mb: 2.5, color: mood.iconColor, transform: 'scale(1.2)' }}>
                 {mood.icon}
               </Box>
               <Typography
                 sx={{
                   fontFamily: '"Manrope", sans-serif',
-                  fontWeight: 700,
-                  fontSize: '1.125rem',
+                  fontWeight: 800,
+                  fontSize: '1.25rem',
                   letterSpacing: '-0.01em',
                   color: mood.textColor,
                 }}
@@ -256,5 +218,6 @@ export default function GetStartedPage() {
         </Stack>
       </Container>
     </Box>
+
   );
 }

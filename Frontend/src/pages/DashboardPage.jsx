@@ -21,10 +21,11 @@ import EventCard from '../components/longform/EventCard';
 import { events } from '../components/longform/CampusEventsGrid';
 
 /* ── Design tokens ───────────────────────────────────────────────── */
-const green = '#00450d';
-const ink   = '#1a1c1c';
-const muted = '#41493e';
-const white = '#ffffff';
+const green = 'var(--accent)';
+const ink   = 'var(--text-primary)';
+const muted = 'var(--text-secondary)';
+const white = 'var(--card-surface)';
+
 
 /* ── Shared bento card style ─────────────────────────────────────── */
 const card = (extra = {}) => ({
@@ -81,20 +82,20 @@ export default function DashboardPage() {
     <Box
       component="main"
       sx={{
-        height: '100vh',
-        overflow: 'hidden',
+        minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: 'transparent',
-
         px: { xs: 2, md: '3vw' },
-        py: '2vh',
+        pt: '100px', // Space for TopBar
+        pb: '5vh',
         opacity: mounted ? 1 : 0,
         transform: mounted ? 'translateY(0)' : 'translateY(8px)',
         transition: 'opacity 0.45s ease, transform 0.45s ease',
         boxSizing: 'border-box',
       }}
     >
+
       <Box sx={{
         maxWidth: 1200,
         width: '100%',
@@ -115,67 +116,73 @@ export default function DashboardPage() {
         }}>
           <Typography sx={{
             fontFamily: '"Manrope", sans-serif',
-            fontWeight: 800,
-            fontSize: '1.1rem',
-            color: green,
+            fontWeight: 850,
+            fontSize: '1.25rem',
+            color: 'var(--text-primary)',
             letterSpacing: '-0.02em',
             cursor: 'default',
           }}>
             Lets Build Us
           </Typography>
+
+
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
             <Typography sx={{
               fontFamily: '"Inter", sans-serif',
-              fontSize: '0.72rem',
-              fontWeight: 600,
-              color: 'rgba(65,73,62,0.65)',
+              fontSize: '0.85rem',
+              fontWeight: 800,
+              color: 'var(--text-secondary)',
               letterSpacing: '0.07em',
               textTransform: 'uppercase',
             }}>
               {todayStr}
             </Typography>
-            {/* Reflect CTA */}
+
+
+            {/* Exit CTA */}
             <Box
               component="button"
-              onClick={() => navigate('/reflect')}
+              onClick={() => navigate('/')}
               sx={{
-                backgroundColor: green,
-                color: white,
-                border: 'none',
-                borderRadius: '8px',
-                px: '16px',
-                py: '7px',
+                backgroundColor: 'var(--card-surface)',
+                color: 'var(--text-primary)',
+                border: '1px solid rgba(0,0,0,0.1)',
+                borderRadius: '12px',
+                px: '24px',
+                py: '10px',
                 fontFamily: '"Manrope", sans-serif',
-                fontWeight: 700,
-                fontSize: '0.78rem',
+                fontWeight: 800,
+                fontSize: '0.9rem',
                 letterSpacing: '0.01em',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 3px 12px rgba(0,69,13,0.22)',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                 '&:hover': {
-                  backgroundColor: '#005a10',
-                  transform: 'translateY(-1px)',
-                  boxShadow: '0 5px 18px rgba(0,69,13,0.3)',
+                  backgroundColor: 'var(--accent)',
+                  color: '#ffffff',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
                 },
                 '&:active': { transform: 'scale(0.97)' },
               }}
+
             >
-              + Reflect
+              Exit
             </Box>
+
           </Box>
+
         </Box>
 
         {/* ══════════════════════════════════════════════════════════
             BENTO GRID
         ══════════════════════════════════════════════════════════ */}
         <Box sx={{
-          flex: 1,
           display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' },
-          gridTemplateRows: '1fr',
-          gap: '10px',
-          minHeight: 0,
+          gridTemplateColumns: { xs: '1fr', md: '2fr 1.2fr' },
+          gap: '20px',
         }}>
+
 
           {/* ── LEFT COLUMN ───────────────────────────────────── */}
           <Box sx={{
@@ -189,18 +196,19 @@ export default function DashboardPage() {
             {!recommendedComponent ? (
               <Box sx={{
                 ...card({
-                  p: '32px 36px',
+                  p: '48px',
                   flex: 1,
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  minHeight: 0,
-                  background: 'linear-gradient(135deg, #00450d 0%, #1b5e20 100%)',
+                  background: 'var(--accent)',
                   position: 'relative',
                   overflow: 'hidden',
+                  backdropFilter: 'blur(10px)',
                 }),
                 border: 'none',
               }}>
+
 
                 {/* Decorative circle */}
                 <Box sx={{
@@ -238,25 +246,28 @@ export default function DashboardPage() {
                   </Typography>
                   <Typography sx={{
                     fontFamily: '"Manrope", sans-serif',
-                    fontWeight: 800,
-                    fontSize: { xs: '1.8rem', md: '2.4rem' },
-                    lineHeight: 1.18,
+                    fontWeight: 850,
+                    fontSize: { xs: '2.5rem', md: '3.5rem' },
+                    lineHeight: 1.1,
                     letterSpacing: '-0.03em',
-                    color: white,
-                    mb: 2,
+                    color: '#ffffff',
+                    mb: 3,
                   }}>
                     {greeting}.<br />
                     Ready to build?
                   </Typography>
+
                   <Typography sx={{
                     fontFamily: '"Inter", sans-serif',
-                    fontSize: '0.875rem',
-                    lineHeight: 1.68,
-                    color: 'rgba(172,244,164,0.65)',
-                    maxWidth: 420,
+                    fontSize: '1.1rem',
+                    fontWeight: 600,
+                    lineHeight: 1.6,
+                    color: 'rgba(255, 255, 255, 0.85)',
+                    maxWidth: 500,
                   }}>
                     This is your personal canvas. More features are coming — your reflections, growth patterns, and intentions will all live here.
                   </Typography>
+
                 </Box>
 
                 {/* Bottom status */}
@@ -302,15 +313,17 @@ export default function DashboardPage() {
               }}>
                 <Box sx={{ textAlign: 'center', mb: 4, maxWidth: 500 }}>
                   <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, mb: 1.5,
-                    backgroundColor: 'rgba(0,69,13,0.05)', px: 2, py: 0.5, borderRadius: 'full' }}>
-                     <AutoAwesomeIcon sx={{ fontSize: 14, color: green }} />
-                     <Typography sx={{ fontFamily: '"Inter", sans-serif', fontSize: '0.65rem', fontWeight: 600, color: green, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    backgroundColor: 'rgba(0,0,0,0.05)', px: 2, py: 0.5, borderRadius: 'full' }}>
+                     <AutoAwesomeIcon sx={{ fontSize: 14, color: 'var(--accent)' }} />
+                     <Typography sx={{ fontFamily: '"Inter", sans-serif', fontSize: '0.75rem', fontWeight: 850, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                        Recommended for you
                      </Typography>
                   </Box>
-                  <Typography sx={{ fontFamily: '"Inter", sans-serif', fontSize: '0.85rem', color: muted, fontStyle: 'italic', lineHeight: 1.6 }}>
+                  <Typography sx={{ fontFamily: '"Inter", sans-serif', fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)', fontStyle: 'italic', lineHeight: 1.6 }}>
                     "{messageToUser}"
                   </Typography>
+
+
                 </Box>
                 
                 {recommendedComponent === 'BoxBreathingCard' && <BoxBreathingCard />}
@@ -336,9 +349,9 @@ export default function DashboardPage() {
               <>
                 <Typography sx={{
                   fontFamily: '"Inter", sans-serif',
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  color: muted,
+                  fontSize: '0.85rem',
+                  fontWeight: 850,
+                  color: 'var(--text-primary)',
                   textTransform: 'uppercase',
                   letterSpacing: '0.08em',
                   px: 1,
@@ -347,6 +360,8 @@ export default function DashboardPage() {
                 }}>
                   Suggested Activities
                 </Typography>
+
+
                 {recommendedEvents.map((event) => (
                   <EventCard key={event.id} event={event} />
                 ))}
