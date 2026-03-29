@@ -1,107 +1,133 @@
 /**
  * geminiController.js
  *
- * Handles POST /api/classify
- * Sends the user's reflection text to Gemini Flash and returns
- * which shortform component to display.
+ * This controller handles the primary AI analysis for user reflections.
+ * It interfaces with Google Generative AI (Gemini) to perform semantic 
+ * classification and mapping to therapeutic components.
  */
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { buildClassificationPrompt, COMPONENT_REGISTRY, LONGFORM_REGISTRY } from '../classificationPrompt.js';
+import { 
+  buildClassificationPrompt, 
+  COMPONENT_REGISTRY, 
+  LONGFORM_REGISTRY 
+} from '../classificationPrompt.js';
+
+// ── AI Configuration ──────────────────────────────────────────────────────
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Use gemini-2.5-flash — fast, cheap, perfect for classification tasks
+/**
+ * Generative Model Instance.
+ * Configures the specific Gemini model and its generation parameters.
+ */
 const model = genAI.getGenerativeModel({
   model: 'gemini-2.5-flash',
-
-
   generationConfig: {
-    temperature: 0.3,       // Low temp = consistent, deterministic classification
+    temperature: 0.3,       // Low temperature for deterministic classification
     responseMimeType: 'application/json',
   },
 });
 
+// Cache registry keys for validation performance
 const VALID_COMPONENTS = Object.keys(COMPONENT_REGISTRY);
-const VALID_LONGFORM = Object.keys(LONGFORM_REGISTRY);
+const VALID_LONGFORM   = Object.keys(LONGFORM_REGISTRY);
+
+// ── Main Controller ───────────────────────────────────────────────────────
 
 /**
  * POST /api/classify
- * Body: { text: string }
- * Response: { component: string, confidence: number, reasoning: string, detectedTone: string }
+ * 
+ * Takes raw reflection text, processes it via Gemini, and returns 
+ * a structured intervention plan.
+ *
+ * @param {Object} req - Express request
+ * @param {Object} res - Express response
  */
 export async function classifyReflection(req, res) {
   try {
     const { text } = req.body;
 
-    // ── Input validation ────────────────────────────────────────────
+    // 1. Input Integrity Checks
     if (!text || typeof text !== 'string') {
       return res.status(400).json({ error: 'Missing or invalid "text" field in request body.' });
     }
 
     const trimmed = text.trim();
     if (trimmed.length < 5) {
-      return res.status(400).json({ error: 'Reflection text is too short to classify.' });
+      return res.status(400).json({ error: 'Reflection text is too short to classify safely.' });
     }
+
     if (trimmed.length > 2000) {
       return res.status(400).json({ error: 'Reflection text exceeds the 2000 character limit.' });
     }
 
-    // ── Build prompt & call Gemini ──────────────────────────────────
+    // 2. Intelligence Layer
     const prompt = buildClassificationPrompt(trimmed);
-
     console.log(`[Gemini] Classifying reflection (${trimmed.length} chars)...`);
+    
     const result = await model.generateContent(prompt);
-    const raw = result.response.text();
+    const rawContent = result.response.text();
 
-    // ── Parse and validate Gemini's JSON response ───────────────────
+    // 3. Response Parsing & Extraction
     let parsed;
     try {
-      // Extract just the JSON object from the response string, ignoring any markdown or text
-      const match = raw.match(/\{[\s\S]*\}/);
+      // Regex to extract JSON from potential AI prose or markdown wrappers
+      const match = rawContent.match(/\{[\s\S]*\}/);
       if (!match) throw new Error("No JSON object found in response");
       parsed = JSON.parse(match[0]);
-    } catch {
-      console.error('[Gemini] Failed to parse response as JSON:', raw);
-      return res.status(502).json({ error: 'Gemini returned an unparseable response.', raw });
+    } catch (parseErr) {
+      console.error('[Gemini] Failed to parse model response:', rawContent);
+      return res.status(502).json({ error: 'Gemini returned an unparseable response.', raw: rawContent });
     }
 
-    const { component, longformComponents, confidence, reasoning, messageToUser, detectedTone } = parsed;
+    const { 
+      component, 
+      longformComponents, 
+      confidence, 
+      reasoning, 
+      messageToUser, 
+      detectedTone 
+    } = parsed;
 
-    // Guard: ensure component is one of our known keys
+    // 4. Schema Validation & Fail-safes
+    
+    // Validate Shortform Component Mapping
     if (!VALID_COMPONENTS.includes(component)) {
-      console.warn(`[Gemini] Unknown component returned: "${component}". Defaulting to BoxBreathingCard.`);
+      console.warn(`[Gemini] Unrecognized component: "${component}". Defaulting.`);
       parsed.component = 'BoxBreathingCard';
-      parsed.reasoning = `Defaulted — Gemini returned an unrecognized component name. Original: "${component}".`;
+      parsed.reasoning = `Fallback: Gemini returned unrecognizable key "${component}".`;
     }
 
-    // Guard: ensure longformComponents are valid
+    // Validate Longform Event Mapping
     let validLongform = [];
     if (Array.isArray(longformComponents)) {
       validLongform = longformComponents.filter(c => VALID_LONGFORM.includes(c));
     }
+
     if (validLongform.length < 2) {
-      console.warn(`[Gemini] Invalid or missing longformComponents returned: ${JSON.stringify(longformComponents)}. Defaulting.`);
+      console.warn(`[Gemini] Insufficient events. Using fallbacks.`);
       validLongform = ["The Buddy Circle", "Morning Walk & Talk"];
     }
 
-    console.log(`[Gemini] ✓ Classified as: ${parsed.component} and ${validLongform.join(', ')} (confidence: ${confidence}, tone: "${detectedTone}")`);
+    console.log(`[Gemini] ✓ Classified: ${parsed.component} | Confidence: ${confidence}`);
 
-    // ── Return clean response ───────────────────────────────────────
+    // 5. Final Dispatch
     return res.status(200).json({
       component: parsed.component,
       longformComponents: validLongform.slice(0, 2),
       confidence: parsed.confidence ?? null,
       reasoning: parsed.reasoning ?? null,
-      messageToUser: parsed.messageToUser ?? "Here is a personalized recommendation based on your reflection.",
+      messageToUser: parsed.messageToUser ?? "Here is my recommendation for you.",
       detectedTone: parsed.detectedTone ?? null,
     });
 
   } catch (err) {
-    console.error('[Gemini] Unexpected error:', err);
+    console.error('[Gemini] Internal Controller Error:', err);
     return res.status(500).json({
       error: 'Internal server error during classification.',
       details: err.message,
     });
   }
 }
+

@@ -1,10 +1,21 @@
 /**
  * classificationPrompt.js
  *
- * The single source of truth for what Gemini knows about each component.
- * Adding a new component = adding one entry here. Nothing else changes.
+ * This file acts as the "Behavioral Knowledge Base" for the AI.
+ * It contains the definitions of all available therapeutic components 
+ * and campus events, alongside the logic for building the systemic 
+ * prompt sent to Gemini.
  */
 
+// ── Registry Definitions ──────────────────────────────────────────────────
+
+/**
+ * COMPONENT_REGISTRY
+ * 
+ * Maps internal component keys to their clinical descriptions and 
+ * targeted keywords. This is used to ground the AI's classification 
+ * in specific therapeutic use-cases.
+ */
 export const COMPONENT_REGISTRY = {
   BoxBreathingCard: {
     name: 'BoxBreathingCard',
@@ -33,6 +44,12 @@ export const COMPONENT_REGISTRY = {
   },
 };
 
+/**
+ * LONGFORM_REGISTRY
+ * 
+ * Contains a curated list of campus-based events and long-term 
+ * community support groups that the AI can suggest for social grounding.
+ */
 export const LONGFORM_REGISTRY = {
   "The Buddy Circle": {
     name: "The Buddy Circle",
@@ -59,11 +76,19 @@ export const LONGFORM_REGISTRY = {
     description: "Start your day with a gentle walk alongside others in the fresh Kathmandu air. Movement eases anxiety, and a little morning sunlight goes a long way for your mood. Open to all."
   }
 };
+
+// ── Prompt Engineering Layer ───────────────────────────────────────────────
+
 /**
- * Builds the classification prompt sent to Gemini.
- * Returns strict JSON — no markdown, no prose.
+ * buildClassificationPrompt
+ * 
+ * Generates the full systemic instruction for the Gemini model.
+ * 
+ * @param {string} reflectionText - The raw text entered by the user.
+ * @returns {string} A string containing strict JSON requirements and context.
  */
 export function buildClassificationPrompt(reflectionText) {
+  // Format registries for ingestion
   const componentDescriptions = Object.values(COMPONENT_REGISTRY)
     .map(c => `- ${c.name}: ${c.description}`)
     .join('\n');
@@ -72,9 +97,10 @@ export function buildClassificationPrompt(reflectionText) {
     .map(c => `- ${c.name}: ${c.description}`)
     .join('\n');
 
+  // Multi-line systemic prompt block
   return `You are a compassionate clinical psychologist AI assistant embedded in a mental wellness app called "Lets Build Us".
 
-A user has just completed their daily reflection. Your task is to read their reflection text and classify which therapeutic micro-intervention component (shortform) AND which two campus events (longform) are most appropriate to show them right now.
+A user has just completed their daily reflection. Your task is to analyze their state and classify the most beneficial therapeutic interventions.
 
 ## Available Shortform Components
 ${componentDescriptions}
@@ -87,21 +113,22 @@ ${longformDescriptions}
 ${reflectionText}
 """
 
-## Instructions
+## Analytical Instructions
 1. Analyze the emotional tone, language patterns, and psychological state expressed in the reflection.
-2. Choose EXACTLY ONE shortform component from the list above that would be most beneficial for this user RIGHT NOW.
-3. Choose EXACTLY TWO longform components (events) from the list above that would best support the user.
-4. Consider: acute vs. cognitive vs. grounding needs. Prioritize the user's most pressing state.
-5. If the reflection is generally positive/neutral with no clear distress, default to BoxBreathingCard as a positive reinforcement practice, and pick two generally uplifting events.
+2. Choose EXACTLY ONE shortform component from the list above based on immediate therapeutic need.
+3. Choose EXACTLY TWO longform components (events) that provide social anchoring.
+4. Prioritize acute physiological needs (Breathing/PMR) if high distress is detected.
+5. If the reflection is positive, focus on reinforcement and community events.
 
-## Response Format
-Respond with ONLY valid JSON. No markdown. No explanation outside the JSON. Exactly this structure:
+## Response Requirements
+Respond with ONLY valid JSON. Exactly this structure:
 {
   "component": "<ShortformComponentName>",
   "longformComponents": ["<EventName1>", "<EventName2>"],
   "confidence": <0.0 to 1.0>,
-  "reasoning": "<One sentence: concise analytical reason for the backend logs>",
-  "messageToUser": "<A short, compassionate, first-person message directly addressed to the user explaining why these are recommended (e.g. 'It sounds like you're carrying a lot today, so I thought these might help.')>",
-  "detectedTone": "<2-3 word emotional tone summary>"
+  "reasoning": "<Short analytical reasoning>",
+  "messageToUser": "<Compassionate message addressed to the user>",
+  "detectedTone": "<Short emotional tone summary>"
 }`;
 }
+
